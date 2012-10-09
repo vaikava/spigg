@@ -17,19 +17,23 @@ class spiggEntity
     @data[k] = v if k and v
     @data[_k] = _v for _k, _v of k unless v
     @
-	
+  
   unset: (k) ->
-	  delete @data[k]
-	  @
-	  
+    delete @data[k]
+    @
+    
   reset: ->
-	  @data = {}
-	  @_setDefaults()
-	  @
-	
+    @data = {}
+    @_setDefaults()
+    @
+  
+  clear: ->
+    @data = {}
+    @
+    
   toJSON: -> 
-	  JSON.stringify @data
-	  
+    JSON.stringify @data
+    
   toString: ->
     JSON.stringify @data
     

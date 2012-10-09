@@ -1,10 +1,3 @@
-
-	   _________  (_)___ _____ _    (_)____
-	  / ___/ __ \/ / __ `/ __ `/   / / ___/
-	 (__  ) /_/ / / /_/ / /_/ /   / (__  ) 
-	/____/ .___/_/\__, /\__, (_)_/ /____/  
-	    /_/      /____//____/ /___/        
-
 spigg.js
 ============
 spigg.js is a simple server-side data wrapper that lets you decouple
@@ -135,6 +128,10 @@ Use the `spiggEntity` by extending it as shown below:
     #  - Note that name is missing now
     u.reset()
     u.get() # => {country: "Sweden"}
+
+    # Empties *ALL* properties from the entity
+    u.clear()
+    u.get() # => {}
     
     # Get the JSON representation of our object
     # - Note: toString() & toJSON() does the same thing

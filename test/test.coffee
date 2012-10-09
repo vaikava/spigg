@@ -25,8 +25,9 @@ describe "spigg.js", ->
       assert.equal(typeof u.toJSON,     "function")
       assert.equal(typeof u.toString,   "function")
       assert.equal(typeof u.toModifier, "function")
+      assert.equal(typeof u.clear,      "function")
     
-    describe "SET, GET, UNSET & RESET", ->
+    describe "SET, GET, UNSET, RESET & CLEAR", ->
       u = new user name: name
       
       it "Default data exists", ->
@@ -80,6 +81,10 @@ describe "spigg.js", ->
         assert.equal u.get("age"), 20
         assert.equal u.get("town"), "Stockholm"
       #it "#ets by obj"
+      
+      it "Can clear data", ->
+        u.clear()
+        assert.equal sizeOf(u.get()), 0
      
     describe "Modification of data", ->
       
@@ -91,7 +96,7 @@ describe "spigg.js", ->
         )
         
         assert.equal u.get("name"), name+name   
-        
+         
         
   describe "spiggModel", ->
     model = require("./fixtures").UserModel
