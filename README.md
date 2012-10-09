@@ -106,6 +106,15 @@ Use the `spiggEntity` by extending it as shown below:
 	  defaults:
 	    country: "Sweden"
 	    
+	  # Specify fields that should ONLY be allowed in this
+	  # entity. Non-specified fields will not appear in the
+	  # entity. Note that without the "fields"-property shown
+	  # below, all fields are allowed.
+	  fields:
+	  	name:    true
+	  	age:     true
+	  	country: true
+	    
 	# Create user by passing arguments to the constructor 
 	#  - Note that user will also contain inherited 
 	#    default values from above

@@ -90,7 +90,13 @@ describe "spigg.js", ->
         assert.equal sizeOf(u.get()), 1
         assert.equal u.data.name, name
         assert.equal u.data.country, null
-        
+
+      it "Can set only allowed fields", ->
+        u = new user(name: name, friends: true, followers: true, notAllowed: true)
+        assert.equal sizeOf(u.get()), 3
+        assert.equal u.get("friends"), null # friends is disabled
+        assert.equal u.get("followers"), true # followers is allowed
+        assert.equal u.get("notAllowed"), null # notAllowed is not specified
            
     describe "Modification of data", ->
       

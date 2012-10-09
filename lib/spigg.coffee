@@ -3,6 +3,7 @@ class spiggEntity
     @data = {}
     @default_val = @default_val ? null
     @_setDefaults() if @defaults and !defs
+    @fields = @fields ? {}
     @set(d)
 
   _setDefaults: ->
@@ -14,9 +15,23 @@ class spiggEntity
     @data[k] ? @default_val
     
   set: (k, v) ->
-    @data[k] = v if k and v
-    @data[_k] = _v for _k, _v of k unless v
+    @setObject(k) unless v
+    
+    if Object.keys(@fields).length >= 1
+      @data[k] = v if @fields[k]
+    else
+      @data[k] = v
     @
+  
+  setObject: (o) ->
+    for k, v of o
+      @set(k, v)
+      
+    @this
+  
+  setUnsafe: (k, v) ->
+    @data[k] = v
+    @    
   
   unset: (k) ->
     delete @data[k]
