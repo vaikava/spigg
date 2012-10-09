@@ -15,7 +15,7 @@ class spiggEntity
     @data[k] ? @default_val
     
   set: (k, v) ->
-    @setObject(k) unless v
+    return @setObject(k) unless v
     
     if Object.keys(@fields).length >= 1
       @data[k] = v if @fields[k]
@@ -26,8 +26,7 @@ class spiggEntity
   setObject: (o) ->
     for k, v of o
       @set(k, v)
-      
-    @this
+    @
   
   setUnsafe: (k, v) ->
     @data[k] = v
