@@ -1,8 +1,8 @@
 class spiggEntity
-  constructor: (d) ->
+  constructor: (d, defs) ->
     @data = {}
     @default_val = @default_val ? null
-    @_setDefaults() if @defaults
+    @_setDefaults() if @defaults and !defs
     @set(d)
 
   _setDefaults: ->

@@ -32,10 +32,10 @@ describe "spigg.js", ->
       
       it "Default data exists", ->
         assert.equal u.data.country, "Sweden"
-      
+        
       it "Data was set through constructor", ->
         assert.equal u.data.name, name
-      
+
       it "Default data was respected", ->
         assert.equal u.data.country, "Sweden"
         
@@ -80,12 +80,18 @@ describe "spigg.js", ->
         assert.equal sizeOf(u.get()), 4
         assert.equal u.get("age"), 20
         assert.equal u.get("town"), "Stockholm"
-      #it "#ets by obj"
       
       it "Can clear data", ->
         u.clear()
         assert.equal sizeOf(u.get()), 0
-     
+
+      it "Can set data through constructor without defaults", ->
+        u = new user(name: name, true)
+        assert.equal sizeOf(u.get()), 1
+        assert.equal u.data.name, name
+        assert.equal u.data.country, null
+        
+           
     describe "Modification of data", ->
       
       it "Can modify by closure", ->

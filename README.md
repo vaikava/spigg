@@ -111,6 +111,10 @@ Use the `spiggEntity` by extending it as shown below:
 	#    default values from above
 	u = new user(name: "John Doe") # => {country: "Sweden", name: "John Doe"}
 	
+	# Create user without any inherited default
+	# properties. Useful for updating already stored data.
+	u = new user(name: "John Doe", true) # => {name: "John Doe"}
+	
 	# Set name by calling the set method
 	u.set("name", "Jane Doe")
     

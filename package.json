@@ -1,7 +1,7 @@
 {
   "name": "spigg",
   "description": "Separates concerns when working with data in node.js for DRY principles and modularity",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "main": "index.js",
   "keywords": [
     "model",
