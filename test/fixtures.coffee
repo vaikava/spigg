@@ -1,5 +1,4 @@
 s = require("../lib/spigg.coffee")
-
 class User extends s.Entity
   defaults: 
     country: "Sweden"
@@ -29,14 +28,10 @@ class User extends s.Entity
   # Custom setter for email adress that also
   # adds a md5 representation of our email to
   # display gravatars.
-  _setEmail: (str, obj, callback) ->
+  _setEmail: (str, obj) ->
     str = String(str).toLowerCase()
     obj.email_md5 = "4af4e151ecbc79407c07ad040862465c"
-    callback str
-    
-    #setTimeout(->
-    #  callback(str)
-    #,1000)
+    str
 
 class UserModel extends s.Model
    save: (doc) ->
