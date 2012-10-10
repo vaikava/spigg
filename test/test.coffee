@@ -110,7 +110,7 @@ describe "spigg.js", ->
         assert.equal u.get("name"), name+name
       
       it "Can set data with custom setters", ->
-        u = new user name: name, email: "john@example.org"
+        u = new user name: name, email: "JOHN@EXAMPLE.ORG"
         assert.equal u.get("name"), name
         assert.equal u.get("email"), "john@example.org"
         assert.equal u.get("email_md5"), "4af4e151ecbc79407c07ad040862465c"

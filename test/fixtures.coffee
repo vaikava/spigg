@@ -33,6 +33,10 @@ class User extends s.Entity
     str = String(str).toLowerCase()
     obj.email_md5 = "4af4e151ecbc79407c07ad040862465c"
     callback str
+    
+    #setTimeout(->
+    #  callback(str)
+    #,1000)
 
 class UserModel extends s.Model
    save: (doc) ->

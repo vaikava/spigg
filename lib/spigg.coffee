@@ -16,17 +16,18 @@ class spiggEntity
     
   set: (k, v) ->
     return @setObject(k) unless v
+    self = this
     
     ucfirst = (str) -> str.substr(0, 1).toUpperCase() + str.substr(1)
     
     if typeof @['_set'+ ucfirst(k)] is 'function'
       @["_set" + ucfirst(k)] v, @data, (str) ->
-        v = str 
-    
-    if Object.keys(@fields).length >= 1
-      @data[k] = v if @fields[k]
-    else
-      @data[k] = v
+        self.data[k] = str
+    else 
+      if Object.keys(@fields).length >= 1
+        @data[k] = v if @fields[k]
+      else
+        @data[k] = v
     @
   
   setObject: (o) ->
