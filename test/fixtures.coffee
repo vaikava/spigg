@@ -10,6 +10,7 @@ class User extends s.Entity
     town:      true
     age:       true
     followers: true
+    email:     true
     
   isAdult: ->
     switch @data.country
@@ -25,12 +26,13 @@ class User extends s.Entity
     return false unless @isAdult()
     return true
   
-  # Custom setter for profile
-  setProfile: (str) ->
-    str.replace(/&/g, '&amp;').replace(/>/g, '&gt;')
-    str.replace(/</g, '&lt;').replace(/"/g, '&quot;');
-    @data["profile"] = str
-
+  # Custom setter for email adress that also
+  # adds a md5 representation of our email to
+  # display gravatars.
+  _setEmail: (str, obj) ->
+    str = String(str).toLowerCase()
+    obj.email_md5 = "4af4e151ecbc79407c07ad040862465c"
+    str
 
 class UserModel extends s.Model
    save: (doc) ->

@@ -159,6 +159,26 @@ Use the `spiggEntity` by extending it as shown below:
       return obj
     )
 
+    # Create a custom setter that is automatically called whenever
+    # the **email** property is updated. This setter *MUST* return the
+    # value to be used for the property.
+    #
+    # The actual data object is also passed, to allow direct 
+    # modification of the data, meaning full freedom.  
+    #
+    #  - Note the underscore (_) in beginning of the setter function's
+    # name and that first character must of property name must be
+    # capitalized for the auto setter to work.
+	_setEmail: (str, obj) ->
+	  # Always store emails in lowercase
+	  str = String(str).toLowerCase()
+	  
+	  # Add a md5 version of our email to our data object
+	  # to allow getting the users gravatar.
+	  obj.email_md5 = crypto.createHash('md5').update(str).digest("hex")
+	   
+	  # Return the modified string, which now should be lowercased
+	  return str 
 
 Documentation: spiggModel
 ============

@@ -107,8 +107,15 @@ describe "spigg.js", ->
           obj
         )
         
-        assert.equal u.get("name"), name+name   
-         
+        assert.equal u.get("name"), name+name
+      
+      it "Can set data with custom setters", ->
+        u = new user name: name, email: "john@example.org"
+        assert.equal u.get("name"), name
+        assert.equal u.get("email"), "john@example.org"
+        assert.equal u.get("email_md5"), "4af4e151ecbc79407c07ad040862465c"
+        assert.equal sizeOf(u.get()), 4
+        
         
   describe "spiggModel", ->
     model = require("./fixtures").UserModel
