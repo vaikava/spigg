@@ -62,12 +62,6 @@ Example
 	    return false unless @isAdult()
 	    return true
 	  
-	  # Custom setter for profile
-	  setProfile: (str) ->
-	    str.replace(/&/g, '&amp;').replace(/>/g, '&gt;')
-	    str.replace(/</g, '&lt;').replace(/"/g, '&quot;');
-	    @data["profile"] = str
-	  
 	  module.exports = User
 	  
 	# /models/User.coffee
