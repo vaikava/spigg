@@ -20,7 +20,8 @@ class spiggEntity
     ucfirst = (str) -> str.substr(0, 1).toUpperCase() + str.substr(1)
     
     if typeof @['_set'+ ucfirst(k)] is 'function'
-      v = @['_set'+ ucfirst(k)](v, @.data)
+      @["_set" + ucfirst(k)] v, @data, (str) ->
+        v = str 
     
     if Object.keys(@fields).length >= 1
       @data[k] = v if @fields[k]

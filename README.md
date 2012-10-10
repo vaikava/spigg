@@ -154,16 +154,17 @@ Use the `spiggEntity` by extending it as shown below:
     )
 
     # Create a custom setter that is automatically called whenever
-    # the **email** property is updated. This setter *MUST* return the
-    # value to be used for the property.
+    # the **email** property is updated. This setter *MUST* callback the
+    # value to be used for the property, with the callback which is passed
+    # to the setter as the third argument.
     #
-    # The actual data object is also passed, to allow direct 
+    # The actual data object is also passed as a reference, to allow direct 
     # modification of the data, meaning full freedom.  
     #
     #  - Note the underscore (_) in beginning of the setter function's
     # name and that first character must of property name must be
     # capitalized for the auto setter to work.
-	_setEmail: (str, obj) ->
+	_setEmail: (str, obj, callback) ->
 	  # Always store emails in lowercase
 	  str = String(str).toLowerCase()
 	  
@@ -172,7 +173,8 @@ Use the `spiggEntity` by extending it as shown below:
 	  obj.email_md5 = crypto.createHash('md5').update(str).digest("hex")
 	   
 	  # Return the modified string, which now should be lowercased
-	  return str 
+	  # by invoking the callback
+	  callback str 
 
 Documentation: spiggModel
 ============

@@ -29,10 +29,10 @@ class User extends s.Entity
   # Custom setter for email adress that also
   # adds a md5 representation of our email to
   # display gravatars.
-  _setEmail: (str, obj) ->
+  _setEmail: (str, obj, callback) ->
     str = String(str).toLowerCase()
     obj.email_md5 = "4af4e151ecbc79407c07ad040862465c"
-    str
+    callback str
 
 class UserModel extends s.Model
    save: (doc) ->
