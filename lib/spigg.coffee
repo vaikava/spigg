@@ -11,6 +11,7 @@ class spiggEntity
     #@revision = 0
     #@revisions = {}
     @_setObject(d) if d
+    @init() if typeof @init is 'function'
 
   get: (k) ->
     return @data unless k
@@ -19,7 +20,6 @@ class spiggEntity
   set: (k, v) ->
     return @_setObject(k) if typeof k is 'object'
     @_set k, v
-      
 
   setUnsafe: (k, v) ->
     @data[k] = v

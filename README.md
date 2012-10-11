@@ -96,6 +96,12 @@ Use the `spiggEntity` by extending it as shown below:
 	
 	# Setup a entity for our user
 	class User extends s.Entity
+	
+	  # Create a init method that gets invoked when
+	  # constructing the class
+	  init: ->
+	  	# Do stuff on init here
+	
 	  # Set defaults for values
 	  defaults:
 	    country: "Sweden"
@@ -173,6 +179,7 @@ Use the `spiggEntity` by extending it as shown below:
 	  obj.email_md5 = crypto.createHash('md5').update(str).digest("hex")
 	   
 	  return str
+
 
 Documentation: spiggModel
 ============

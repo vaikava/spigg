@@ -27,6 +27,10 @@ describe "spigg.js", ->
       assert.equal(typeof u.toModifier, "function")
       assert.equal(typeof u.clear,      "function")
     
+    it "Internal constructor gets called", ->
+      u = new user name: name
+      assert.equal u.status, "Initialized"
+      
     describe "SET, GET, UNSET, RESET & CLEAR", ->
       u = new user name: name
       
@@ -116,7 +120,7 @@ describe "spigg.js", ->
         assert.equal u.get("email"), "john@example.org"
         assert.equal u.get("email_md5"), "4af4e151ecbc79407c07ad040862465c"
         assert.equal sizeOf(u.get()), 4
-        
+  
   describe "spiggModel", ->
     model = require("./fixtures").UserModel
     user = require("./fixtures").User

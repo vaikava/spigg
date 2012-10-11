@@ -11,6 +11,9 @@ class User extends s.Entity
     followers: true
     email:     true
     
+  init: ->
+    @status = "Initialized"
+    
   isAdult: ->
     switch @data.country
       when "Sweden"
