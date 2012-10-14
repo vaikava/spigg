@@ -48,7 +48,7 @@ describe "spigg.js", ->
         
       it "Gets all data", ->
         obj = u.get()
-        assert.equal sizeOf(obj), 2
+        assert.equal sizeOf(obj), 3
         assert.equal obj.country, "Sweden"
           
       it "Sets data by key/value", ->
@@ -58,9 +58,10 @@ describe "spigg.js", ->
       it "Unsets value by key", ->
         u.unset("name")
         assert.equal u.get "name", null
-        assert.equal sizeOf(u.get()), 1
+        assert.equal sizeOf(u.get()), 2
 
       it "Stringifies propertly", ->
+        u.unset("meta")
         str = JSON.stringify(country: "Sweden")
         assert.equal u.toJSON(), str
         assert.equal u.toString(), str
@@ -70,19 +71,15 @@ describe "spigg.js", ->
         u.reset()
         obj = u.get()
         
-        assert.equal sizeOf(obj), 1
+        assert.equal sizeOf(obj), 2
         assert.equal u.get "name", null
         assert.equal u.get("country"), "Sweden"
         assert.equal obj.country, "Sweden"
-      
-     # it "Can chain set/get", ->
-     #   n = u.set("name", newname).get("name")
-     #   assert.equal newname, n
         
       it "Can set by object", ->
         u = new user
         u.set age: 20, town: "Stockholm"
-        assert.equal sizeOf(u.get()), 3
+        assert.equal sizeOf(u.get()), 4
         assert.equal u.get("age"), 20
         assert.equal u.get("town"), "Stockholm"
       
@@ -98,11 +95,22 @@ describe "spigg.js", ->
 
       it "Can set only allowed fields", ->
         u = new user(name: name, friends: true, followers: true, notAllowed: true)
-        assert.equal sizeOf(u.get()), 3
+        assert.equal sizeOf(u.get()), 4
         assert.equal u.get("friends"), null # friends is disabled
         assert.equal u.get("followers"), true # followers is allowed
         assert.equal u.get("notAllowed"), null # notAllowed is not specified
-           
+     
+      it "Can set dot-notated fields", ->
+        u = new user
+        d = new Date()
+        u.set "meta.last_loggedin", d
+        assert.ok require("util").isDate(u.get("meta").last_loggedin)
+      
+      it "Can get dot-notated fields", ->
+        u = new user
+        assert.ok u.get("meta.last_loggedin") isnt null
+        assert.ok require("util").isDate(u.get("meta.last_loggedin"))
+      
     describe "Modification of data", ->
       
       it "Can modify by closure", ->
@@ -119,7 +127,14 @@ describe "spigg.js", ->
         assert.equal u.get("name"), name
         assert.equal u.get("email"), "john@example.org"
         assert.equal u.get("email_md5"), "4af4e151ecbc79407c07ad040862465c"
-        assert.equal sizeOf(u.get()), 4
+        assert.equal sizeOf(u.get()), 5
+        
+      it "Custom setters apply when using dot notation", ->
+        u = new user
+        u.set("meta.votes", 12000)
+        assert.equal u.get("meta").votes, 12
+        
+
   
   describe "spiggMapper", ->
     mapper = require("./fixtures").UserMapper

@@ -15,10 +15,13 @@ class spiggEntity
 
   get: (k) ->
     return @data unless k
+    return @_getDotNotated(k) if ~k.indexOf "."
     @data[k] ? @default_val
     
   set: (k, v) ->
     return @_setObject(k) if typeof k is 'object'
+    return @_setDotNotated(k, v) if ~k.indexOf "."
+    
     @_set k, v
 
   setUnsafe: (k, v) ->
@@ -53,8 +56,7 @@ class spiggEntity
     @
 
   _set: (k, v) ->
-    method = '_set' + k.substr(0, 1).toUpperCase() + k.substr(1)
-    v = @[method](v, @.data) if typeof @[method] is 'function'
+    v = @_callCustomSetter(k, v)
     
     if @fields isnt {}
       @data[k] = v if @fields[k]
@@ -63,7 +65,28 @@ class spiggEntity
     
    _setObject: (o) ->
      @_set(k, v) for k, v of o
-     
+  
+  _callCustomSetter: (k, v) ->
+    method = '_set' + k.substr(0, 1).toUpperCase() + k.substr(1)
+    v = @[method](v, @.data) if typeof @[method] is 'function'
+    v
+  
+  _getDotNotated: (k) ->
+    walker = (o, i) -> o[i] # ? @default_val
+    k.split(".").reduce walker, @data
+
+  _setDotNotated: (k, v) ->
+    arr = k.split(".")
+    _k = arr[arr.length - 1]
+    
+    v = @_callCustomSetter(arr.join("_"), v)
+  
+    walker = (o, i) ->
+      o[i] = v if i is _k
+      o[i]
+  
+    arr.reduce walker, @data
+    
   _setChanged: (context) ->
     context.revision++
     md5 = crypto.createHash('md5').update(JSON.stringify context.data).digest("hex")

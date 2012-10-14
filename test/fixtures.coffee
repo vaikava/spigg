@@ -2,6 +2,9 @@ s = require("../lib/spigg.coffee")
 class User extends s.Entity
   defaults: 
     country: "Sweden"
+    
+    meta:
+      created: new Date()
    
   fields:
     name:      true
@@ -36,6 +39,11 @@ class User extends s.Entity
     obj.email_md5 = "4af4e151ecbc79407c07ad040862465c"
     str
 
+  # Custom setter for nested object that is accessed
+  # through dot notation: set("meta.", val)
+  _setMeta_votes: (n) ->
+    n/1000
+     
 class UserMapper extends s.Mapper
    save: (doc) ->
     return @isEntity doc

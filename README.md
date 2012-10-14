@@ -11,7 +11,6 @@ up to you.
 Read about the *data mapper* pattern [here](http://martinfowler.com/eaaCatalog/dataMapper.html).
 
 
-
 Installation
 ============
 	
@@ -93,9 +92,8 @@ Example
 Documentation: spiggEntity
 ============
 Use the `spiggEntity` by extending it as shown below:
-
 	
-	s = require("spigg)
+	s = require("spigg")
 	
 	# Setup a entity for our user
 	class User extends s.Entity
@@ -139,6 +137,12 @@ Use the `spiggEntity` by extending it as shown below:
     # Unset a property
     u.unset("country")
     u.get() # => {name: "John Doe"}
+    
+    # Get nested properties with dot notation
+    u.get("meta.created") # => Sun Oct 14 2012 18:55:52 GMT+0000 (UTC)
+    
+    # Set nested properties with dot notation
+    u.set("meta.votes", 12000)
     
     # Reset the user back to default values
     #  - Note that name is missing now
@@ -194,6 +198,10 @@ as shown below:
 	class userMapper extends s.Mapper
 	  save: (user) ->
       	db.save user if @isEntity user
+
+Roadmap
+============
+* Support for revisions
 
 
 License
