@@ -77,7 +77,7 @@
 			<p><strong>spigg.js</strong> brings the <a href="http://martinfowler.com/eaaCatalog/dataMapper.html">data mapper pattern</a> to node.js
 			by introducing <em>entities</em> for your business logic and <em>mappers</em> to house database code, in order to allow modularity and set the cornerstones
 			for DRY principles in your application.<br /><br />
-			<strong>spigg.js</strong> only ships with the most minimal feature set to get out of your way and doesn't care about how you store your data or what business logic you require.</p>
+			<strong>spigg.js</strong> only ships with a minimal featureset to get out of your way and doesn't care about how you store your data or what business logic your application requires.</p>
 			<br />
 			<p>Download the latest version of spigg today by running <code>npm install spigg</code> in your shell.</p><br /><br />
 			
@@ -145,16 +145,16 @@
 		quickly arise when you need to unit test your code, or work with <code>users</code> as
 		a resource from elsewhere in your application. <br /><br />
 		
-		<em>Dude, isnt that user blocked?</em>
-		Call <code>user.isBlocked()</code> from anywhere in your app and find out.<br /><br />
+		<em>Dude, is that user a kid?</em>
+		Call <code>user.isAdult()</code> and find out by invoking the business logic you just centralized into your entity. 
+		<br /><br />
 		
-		If you haven't thought about separation of concerns, you quickly end up doing
-		integration testing instead of actual unit testing and any DRY principles
-		can be forgotten soon. <br /><br />
+		Without separation of concerns, you quickly end up doing integration testing instead of actual unit testing and any DRY principles
+		can be forgotten soon. N<br /><br />
 		
 		As long as you stick to your mappers for accessing and persisting data across
 		your application, using multiple databases and building cache-layers inside
-		or on top of your models should be simple.</p>
+		or even on top of your models should be a breeze.</p>
 
 		</div>
 		
