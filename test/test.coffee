@@ -121,14 +121,14 @@ describe "spigg.js", ->
         assert.equal u.get("email_md5"), "4af4e151ecbc79407c07ad040862465c"
         assert.equal sizeOf(u.get()), 4
   
-  describe "spiggModel", ->
-    model = require("./fixtures").UserModel
+  describe "spiggMapper", ->
+    mapper = require("./fixtures").UserMapper
     user = require("./fixtures").User
-    model = new model
+    mapper = new mapper
     user = new user name: "John Doe"
     
     it "Can validate entity", ->
-      assert.ok(model.save(user))
-      assert.ok(!model.save({k: "I AM ZE OBJECT"}))
-      assert.ok(!model.save("I AM ZE STRING"))
-      assert.ok(!model.save(["I AM ZE ARRAY"]))
+      assert.ok(mapper.save(user))
+      assert.ok(!mapper.save({k: "I AM ZE OBJECT"}))
+      assert.ok(!mapper.save("I AM ZE STRING"))
+      assert.ok(!mapper.save(["I AM ZE ARRAY"]))

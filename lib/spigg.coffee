@@ -72,8 +72,8 @@ class spiggEntity
     
 module.exports.Entity = spiggEntity
 
-class spiggModel
+class spiggMapper
   isEntity: (v) ->
     v instanceof spiggEntity ? false
 
-module.exports.Model = spiggModel
+module.exports.Mapper = spiggMapper

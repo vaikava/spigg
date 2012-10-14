@@ -36,9 +36,9 @@ class User extends s.Entity
     obj.email_md5 = "4af4e151ecbc79407c07ad040862465c"
     str
 
-class UserModel extends s.Model
+class UserMapper extends s.Mapper
    save: (doc) ->
     return @isEntity doc
 
-module.exports.User = User
-module.exports.UserModel = UserModel
+module.exports.User =       User
+module.exports.UserMapper = UserMapper

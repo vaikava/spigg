@@ -1,11 +1,15 @@
 spigg.js
 ============
-spigg.js is a simple server-side data wrapper that lets you decouple
-your business logic from data persistence, to allow both code reusage and 
-modularity.
+spigg.js brings the *Data mapper* pattern to node.js, giving you database-
+agnostic **mappers** for data persistence and **entities** for business
+logic, to ensure DRY principles and testability across your application.
 
-spigg.js gives you **models** for data persistence and **entities** for
-business logic, the cornerstones for DRY principles and modularity.
+spigg.js is lightweight by design and only ships with a handful of methods
+to get, set, unset and clear your data and thereby leaves everything else
+up to you.
+
+Read about the *data mapper* pattern [here](http://martinfowler.com/eaaCatalog/dataMapper.html).
+
 
 
 Installation
@@ -27,16 +31,16 @@ If you haven't thought about separation of concerns, you quickly end up doing
 integration testing instead of actual unit testing and any DRY principles
 can be forgotten soon.
 
-With *spigg* you put all your code that persist data into `models` and the
+With *spigg* you put all your code that persist data into `mappers` and the
 actual business logic such as data validation and filtering into `entities`. 
 
 Imagine entities as being unaware of both the origin and destination of data.
 Entities should focus on creating valid data for your application.
 
-Models on the other hand does store your data and rely fully upon said 
+Mappers on the other hand does store your data and rely fully upon said 
 entities to have dealt with validation and filtering of data. 
 
-As long as you stick to your models for accessing and persisting data across
+As long as you stick to your mappers for accessing and persisting data across
 your application, using multiple databases and building cache-layers inside
 or on top of your models should be simple.
 
@@ -64,24 +68,23 @@ Example
 	  
 	  module.exports = User
 	  
-	# /models/User.coffee
-	db = require("mongo")
-	class UserModel extends s.Model
+	# /mappers/User.coffee
+	class UserMapper extends s.Mapper
    
       save: (doc, fn) ->
-        db.users.save doc
+        require("db").collection("users").save doc
 
-	module.exports = UserModel
+	module.exports = UserMapper
 
 	# /app.js
-	express =   require('express')
-    user =      require("./entities/User.coffee")
-	userModel = require("./models/User.coffee")
-	app =       express()
+	express =    require('express')
+    user =       require("./entities/User.coffee")
+	userMapper = require("./mappers/User.coffee")
+	app =        express()
 	
 	app.post "/users", (req, res) ->
 	  user = new User req.body
-	  userModel.save user if user.isValid() 
+	  userMapper.save user if user.isValid() 
 	  res.send "", 201
 
     app.listen(80)
@@ -181,14 +184,14 @@ Use the `spiggEntity` by extending it as shown below:
 	  return str
 
 
-Documentation: spiggModel
+Documentation: spiggMapper
 ============
-`spiggModel` is a blank slate containing the the `isEntity`-method,
-which is used to ensure that data that is passed into the model origins
-from a class that extends `spiggEntity`.
+`spiggMapper` is a blank slate containing only the the `isEntity`-method,
+which is used to ensure that data that is passed into the mapper origins
+from a class that extends `spiggEntity`. Use the `isEntity`-method
+as shown below:
  
-	# Invoke the this.isEntity()-method to do check
-	class UserModel extends s.Model
+	class userMapper extends s.Mapper
 	  save: (user) ->
       	db.save user if @isEntity user
 
