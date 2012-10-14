@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>spigg.js - bringing data mappers to node.js</title>
+		<style type="text/css" media="screen">
+			/*
+			Copyright (c) 2011, Yahoo! Inc. All rights reserved.
+			Code licensed under the BSD License:
+			http://developer.yahoo.com/yui/license.html
+			version: 2.9.0
+			*/
+			html{color:#000;background:#FFF}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,select,p,blockquote,th,td{margin:0;padding:0}table{border-collapse:collapse;border-spacing:0}fieldset,img{border:0}address,button,caption,cite,code,dfn,em,input,optgroup,option,select,strong,textarea,th,var{font:inherit}del,ins{text-decoration:none}li{list-style:none}caption,th{text-align:left}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}q:before,q:after{content:''}abbr,acronym{border:0;font-variant:normal}sup{vertical-align:baseline}sub{vertical-align:baseline}legend{color:#000}
+						
+			body {
+			  font-family: Baskerville, "Baskerville Old Face", "Hoefler Text", Garamond, "Times New Roman", serif;
+			  font-size: 14px;
+			  line-height: 200%;
+			  color: #333;
+			  background-color: #fff;
+			  margin-bottom: 100px;
+			}
+			
+			a {
+			  color: #000;
+			}
+			
+			
+			h1 {
+			  color: #000;
+			  font-size: 3.2em;
+			  margin-bottom: 20px;
+			}
+			
+			h2 {
+			  color: #000;
+			  font-size: 2.4em;
+			  margin-top: 30px;
+			  margin-bottom: 10px;
+			}
+			
+			p {
+			  font-size: 1.6em;
+			  width: 700px;
+			}
+			
+			.container {
+              margin: 60px 0 0 60px;
+              width: 800px;
+			}
+			
+			em {
+			  font-style: italic;
+			  color: #000;
+			}
+			
+			.codepusher {
+			  margin-bottom: 30px;
+			}
+			
+			code {
+				color: #000;
+				font-family: Consolas, monaco, monospace;
+				font-size: 0.8em;
+				background-color: #EEE;
+				padding: 2px 5px 2px 5px;
+			}
+			
+		</style>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+	</head>
+	
+	<body>
+		
+		<div class="container">
+			<h1>spigg.js</h1>
+			
+			<p><strong>spigg.js</strong> brings the <a href="http://martinfowler.com/eaaCatalog/dataMapper.html">data mapper pattern</a> to node.js
+			by introducing <em>entities</em> for your business logic and <em>mappers</em> to house database code, in order to allow modularity and set the cornerstones
+			for DRY principles in your application.<br /><br />
+			<strong>spigg.js</strong> only ships with the most minimal feature set to get out of your way and doesn't care about how you store your data or what business logic you require.</p>
+			<br />
+			<p>Download the latest version of spigg today by running <code>npm install spigg</code> in your shell.</p><br /><br />
+			
+			<p>Have a look at the full documentation of spigg here: <a href="https://github.com/vaikavalabs/spigg">https://github.com/vaikavalabs/spigg</a></p>
+			<h2>Short example</h2>
+			<div class="codepusher"></div>
+			
+<!-- HTML generated using hilite.me --><div style="background: #111111; overflow:auto;width:auto;color:white;background:black;border:solid gray;border-width:.1em .1em .1em .1em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-style: italic; background-color: #0f140f"># /entities/User.coffee</span>
+<span style="color: #fb660a; font-weight: bold">class</span> <span style="color: #ffffff">User</span> <span style="color: #fb660a; font-weight: bold">extends</span> <span style="color: #ffffff">s.Entity</span><br />
+  <span style="color: #008800; font-style: italic; background-color: #0f140f"># Set your own standard values</span>
+  <span style="color: #fb660a">defaults:</span>
+    <span style="color: #fb660a">country: </span><span style="color: #0086d2">&quot;Sweden&quot;</span>
+    <span style="color: #fb660a">meta:</span>
+      <span style="color: #fb660a">created: </span><span style="color: #fb660a; font-weight: bold">new</span> <span style="color: #ffffff">Date()</span>
+    
+  <span style="color: #008800; font-style: italic; background-color: #0f140f"># Build your own functions for business logic</span>
+  <span style="color: #fb660a">isAdult: </span><span style="color: #ffffff">-&gt;</span>
+    <span style="color: #fb660a; font-weight: bold">switch</span> <span style="color: #ffffff">@data.country</span>
+      <span style="color: #fb660a; font-weight: bold">when</span> <span style="color: #0086d2">&quot;Sweden&quot;</span>
+        <span style="color: #fb660a; font-weight: bold">return</span> <span style="color: #fb660a; font-weight: bold">true</span> <span style="color: #fb660a; font-weight: bold">if</span> <span style="color: #ffffff">@data.age</span> <span style="color: #ffffff">&gt;=</span> <span style="color: #0086f7; font-weight: bold">18</span>
+      <span style="color: #fb660a; font-weight: bold">when</span> <span style="color: #0086d2">&quot;UK&quot;</span>
+        <span style="color: #fb660a; font-weight: bold">return</span> <span style="color: #fb660a; font-weight: bold">true</span> <span style="color: #fb660a; font-weight: bold">if</span> <span style="color: #ffffff">@data.age</span> <span style="color: #ffffff">&gt;=</span> <span style="color: #0086f7; font-weight: bold">16</span>        
+      <span style="color: #fb660a; font-weight: bold">else</span> 
+        <span style="color: #fb660a; font-weight: bold">return</span> <span style="color: #fb660a; font-weight: bold">false</span>
+
+  <span style="color: #008800; font-style: italic; background-color: #0f140f"># Setup validation that applies to your application</span>
+  <span style="color: #fb660a">isValid: </span><span style="color: #ffffff">-&gt;</span>
+    <span style="color: #fb660a; font-weight: bold">return</span> <span style="color: #fb660a; font-weight: bold">false</span> <span style="color: #ffffff">unless</span> <span style="color: #ffffff">@data.name</span>
+    <span style="color: #fb660a; font-weight: bold">return</span> <span style="color: #fb660a; font-weight: bold">false</span> <span style="color: #ffffff">unless</span> <span style="color: #ffffff">@isAdult()</span>
+    <span style="color: #fb660a; font-weight: bold">return</span> <span style="color: #fb660a; font-weight: bold">true</span>
+  
+  <span style="color: #fb660a">module.exports = </span><span style="color: #ffffff">User</span>
+  
+<span style="color: #008800; font-style: italic; background-color: #0f140f"># /mappers/User.coffee</span>
+<span style="color: #fb660a; font-weight: bold">class</span> <span style="color: #ffffff">UserMapper</span> <span style="color: #fb660a; font-weight: bold">extends</span> <span style="color: #ffffff">s.Mapper</span>
+  
+  <span style="color: #008800; font-style: italic; background-color: #0f140f"># Persist data using whatever database you want</span>
+  <span style="color: #fb660a">save: </span><span style="color: #ff0086; font-weight: bold">(doc, fn) -&gt;</span>
+    <span style="color: #ffffff">require(</span><span style="color: #0086d2">&quot;db&quot;</span><span style="color: #ffffff">).collection(</span><span style="color: #0086d2">&quot;users&quot;</span><span style="color: #ffffff">).save</span> <span style="color: #ffffff">doc</span>
+
+<span style="color: #fb660a">module.exports = </span><span style="color: #ffffff">UserMapper</span>
+
+<span style="color: #008800; font-style: italic; background-color: #0f140f"># /app.js</span>
+<span style="color: #fb660a">express = </span>   <span style="color: #ffffff">require(</span><span style="color: #0086d2">&#39;express&#39;</span><span style="color: #ffffff">)</span>
+<span style="color: #fb660a">user = </span>      <span style="color: #ffffff">require(</span><span style="color: #0086d2">&quot;./entities/User.coffee&quot;</span><span style="color: #ffffff">)</span>
+<span style="color: #fb660a">userMapper = </span><span style="color: #ffffff">require(</span><span style="color: #0086d2">&quot;./mappers/User.coffee&quot;</span><span style="color: #ffffff">)</span>
+<span style="color: #fb660a">app = </span>       <span style="color: #ffffff">express()</span>
+
+<span style="color: #ffffff">app.post</span> <span style="color: #0086d2">&quot;/users&quot;</span><span style="color: #ffffff">,</span> <span style="color: #ff0086; font-weight: bold">(req, res) -&gt;</span>
+  <span style="color: #fb660a">user = </span><span style="color: #fb660a; font-weight: bold">new</span> <span style="color: #ffffff">User</span> <span style="color: #ffffff">req.body</span>
+  <span style="color: #ffffff">userMapper.save</span> <span style="color: #ffffff">user</span> <span style="color: #fb660a; font-weight: bold">if</span> <span style="color: #ffffff">user.isValid()</span> 
+  <span style="color: #ffffff">res.send</span> <span style="color: #0086d2">&quot;&quot;</span><span style="color: #ffffff">,</span> <span style="color: #0086f7; font-weight: bold">201</span>
+
+<span style="color: #ffffff">app.listen(</span><span style="color: #0086f7; font-weight: bold">80</span><span style="color: #ffffff">)</span>
+</pre></div>
+
+
+
+		<h2>But why?</h2>
+		<p>Imagine having an application that lets users signup.<br />
+		For each signup, you need to apply app-specific validation rules to the user-submitted data to create a
+		<code>user</code> that you can persist to your database of choice.<br /><br />
+		
+		Mashing this together in one block is great for rapid prototyping, but problems
+		quickly arise when you need to unit test your code, or work with <code>users</code> as
+		a resource from elsewhere in your application. <br /><br />
+		
+		<em>Dude, isnt that user blocked?</em>
+		Call <code>user.isBlocked()</code> from anywhere in your app and find out.<br /><br />
+		
+		If you haven't thought about separation of concerns, you quickly end up doing
+		integration testing instead of actual unit testing and any DRY principles
+		can be forgotten soon. <br /><br />
+		
+		As long as you stick to your mappers for accessing and persisting data across
+		your application, using multiple databases and building cache-layers inside
+		or on top of your models should be simple.</p>
+
+		</div>
+		
+	</body>
+</html>
