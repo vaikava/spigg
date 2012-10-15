@@ -1,11 +1,10 @@
 class spiggEntity
   constructor: (d, defs) ->
     @data = {}
-    @default_val = @default_val ? null
-    @_setDefaults if @defaults and !arguments[1]
-    @_setDefaults() if @defaults and !defs
     @fields = @fields ? {}
-    @_setObject(d) if arguments[0]
+    @default_val = @default_val ? null
+    @_setDefaults() if @defaults and !defs
+    @_setObject(d) if d
     @init() if typeof @init is 'function'
 
   get: (k) ->
