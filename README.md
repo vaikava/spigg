@@ -46,47 +46,50 @@ or on top of your models should be simple.
  
 Example
 ============
-	# /entities/User.coffee
-	class User extends s.Entity
-	  defaults: 
-	    country: "Sweden"
-	    
-	  isAdult: ->
-	    switch @data.country
-	      when "Sweden"
-	        return true if @data.age >= 18
-	      when "UK"
-	        return true if @data.age >= 16        
-	      else 
-	        return false
-	
-	  isValid: ->
-	    return false unless @data.name
-	    return false unless @isAdult()
-	    return true
-	  
-	  module.exports = User
-	  
-	# /mappers/User.coffee
-	class UserMapper extends s.Mapper
+# /entities/User.coffee
+class User extends s.Entity
+  # Set your own standard values
+  defaults:
+    country: "Sweden"
+    meta:
+      created: new Date()
+    
+  isAdult: ->
+    switch @data.country
+      when "Sweden"
+        return true if @data.age >= 18
+      when "UK"
+        return true if @data.age >= 16        
+      else 
+        return false
+
+  isValid: ->
+    return false unless @data.name
+    return false unless @isAdult()
+    return true
+  
+  module.exports = User
+  
+# /mappers/User.coffee
+class UserMapper extends s.Mapper
    
-      save: (doc, fn) ->
-        require("db").collection("users").save doc
+  save: (doc, fn) ->
+    require("db").collection("users").save doc
 
-	module.exports = UserMapper
+module.exports = UserMapper
 
-	# /app.js
-	express =    require('express')
-    user =       require("./entities/User.coffee")
-	userMapper = require("./mappers/User.coffee")
-	app =        express()
-	
-	app.post "/users", (req, res) ->
-	  user = new User req.body
-	  userMapper.save user if user.isValid() 
-	  res.send "", 201
+# /app.js
+express =    require('express')
+user =       require("./entities/User.coffee")
+userMapper = require("./mappers/User.coffee")
+app =        express()
 
-    app.listen(80)
+app.post "/users", (req, res) ->
+  user = new User req.body
+  userMapper.save user if user.isValid() 
+  res.send "", 201
+
+app.listen(80)
 
 
 Documentation: spiggEntity
@@ -106,6 +109,14 @@ Use the `spiggEntity` by extending it as shown below:
 	  # Set defaults for values
 	  defaults:
 	    country: "Sweden"
+	    
+	  # Create a custom setter that appends followers
+	  # to the followers propery assuming it being an
+	  # array  
+      _setFollowers: (str, obj) ->
+	    obj.followers = obj.followers ? []
+	    obj.followers.push str
+	    false
 	    
 	  # Specify fields that should ONLY be allowed in this
 	  # entity. Non-specified fields will not appear in the

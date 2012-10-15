@@ -48,7 +48,7 @@ describe "spigg.js", ->
         
       it "Gets all data", ->
         obj = u.get()
-        assert.equal sizeOf(obj), 3
+        assert.equal sizeOf(obj), 4
         assert.equal obj.country, "Sweden"
           
       it "Sets data by key/value", ->
@@ -58,11 +58,11 @@ describe "spigg.js", ->
       it "Unsets value by key", ->
         u.unset("name")
         assert.equal u.get "name", null
-        assert.equal sizeOf(u.get()), 2
+        assert.equal sizeOf(u.get()), 3
 
       it "Stringifies propertly", ->
         u.unset("meta")
-        str = JSON.stringify(country: "Sweden")
+        str = JSON.stringify(country: "Sweden", followers: [])
         assert.equal u.toJSON(), str
         assert.equal u.toString(), str
         
@@ -71,7 +71,7 @@ describe "spigg.js", ->
         u.reset()
         obj = u.get()
         
-        assert.equal sizeOf(obj), 2
+        assert.equal sizeOf(obj), 3
         assert.equal u.get "name", null
         assert.equal u.get("country"), "Sweden"
         assert.equal obj.country, "Sweden"
@@ -79,7 +79,7 @@ describe "spigg.js", ->
       it "Can set by object", ->
         u = new user
         u.set age: 20, town: "Stockholm"
-        assert.equal sizeOf(u.get()), 4
+        assert.equal sizeOf(u.get()), 5
         assert.equal u.get("age"), 20
         assert.equal u.get("town"), "Stockholm"
       
@@ -94,11 +94,11 @@ describe "spigg.js", ->
         assert.equal u.data.country, null
 
       it "Can set only allowed fields", ->
-        u = new user(name: name, friends: true, followers: true, notAllowed: true)
+        u = new user(name: name, friends: true, notAllowed: true)
         assert.equal sizeOf(u.get()), 4
         assert.equal u.get("friends"), null # friends is disabled
-        assert.equal u.get("followers"), true # followers is allowed
         assert.equal u.get("notAllowed"), null # notAllowed is not specified
+        assert.deepEqual u.get("followers"), [] # followers is allowed
      
       it "Can set dot-notated fields", ->
         u = new user
@@ -127,13 +127,17 @@ describe "spigg.js", ->
         assert.equal u.get("name"), name
         assert.equal u.get("email"), "john@example.org"
         assert.equal u.get("email_md5"), "4af4e151ecbc79407c07ad040862465c"
-        assert.equal sizeOf(u.get()), 5
+        assert.equal sizeOf(u.get()), 6
         
       it "Custom setters apply when using dot notation", ->
         u = new user
         u.set("meta.votes", 12000)
         assert.equal u.get("meta").votes, 12
-        
+      
+      it "Custom setters can return false for object modification", ->
+        u = new user
+        u.set("followers", "Jane Doe")
+        assert.deepEqual u.get("followers"), ["Jane Doe"] 
 
   
   describe "spiggMapper", ->

@@ -56,7 +56,8 @@ class spiggEntity
     @
 
   _set: (k, v) ->
-    v = @_callCustomSetter(k, v)
+    nv = @_callCustomSetter(k, v)
+    if nv is false then return null else v = nv
     
     if @fields isnt {}
       @data[k] = v if @fields[k]
@@ -68,7 +69,7 @@ class spiggEntity
   
   _callCustomSetter: (k, v) ->
     method = '_set' + k.substr(0, 1).toUpperCase() + k.substr(1)
-    v = @[method](v, @.data) if typeof @[method] is 'function'
+    v = @[method](v, @.data)  if typeof @[method] is 'function'
     v
   
   _getDotNotated: (k) ->
@@ -79,8 +80,9 @@ class spiggEntity
     arr = k.split(".")
     _k = arr[arr.length - 1]
     
-    v = @_callCustomSetter(arr.join("_"), v)
-  
+    nv = @_callCustomSetter(arr.join("_"), v)
+    if nv is false then return null else v = nv
+    
     walker = (o, i) ->
       o[i] = v if i is _k
       o[i]

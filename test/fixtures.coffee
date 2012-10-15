@@ -2,7 +2,7 @@ s = require("../lib/spigg.coffee")
 class User extends s.Entity
   defaults: 
     country: "Sweden"
-    
+    followers: []
     meta:
       created: new Date()
    
@@ -43,7 +43,12 @@ class User extends s.Entity
   # through dot notation: set("meta.", val)
   _setMeta_votes: (n) ->
     n/1000
-     
+
+  _setFollowers: (str, obj) ->
+    obj.followers = obj.followers ? []
+    obj.followers.push str
+    false
+        
 class UserMapper extends s.Mapper
    save: (doc) ->
     return @isEntity doc
