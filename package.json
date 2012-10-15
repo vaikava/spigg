@@ -9,7 +9,7 @@
     "separation",
     "modularity"
   ],
-  "url": "http://www.vaikava.com",
+  "url": "https://github.com/vaikava/spigg",
   "author": {
     "name": "Joakim B",
     "email": "joakim@theindustry.se"
@@ -17,7 +17,7 @@
   "contributors": [],
   "repository": {
     "type": "git",
-    "url": "http://github.com/vaikavalabs/spigg.git"
+    "url": "http://github.com/vaikava/spigg.git"
   },
   "licenses": [
     {
