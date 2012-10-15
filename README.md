@@ -48,12 +48,15 @@ Example
 ============
 # /entities/User.coffee
 class User extends s.Entity
-  # Set your own standard values
-  defaults:
-    country: "Sweden"
-    meta:
-      created: new Date()
-    
+
+  # Set your own standard values and allowed fields
+  # inside the constructor
+  init: ->
+    @defaults = 
+      country: "Sweden"
+      meta:
+        created: new Date()
+  
   isAdult: ->
     switch @data.country
       when "Sweden"
@@ -101,14 +104,20 @@ Use the `spiggEntity` by extending it as shown below:
 	# Setup a entity for our user
 	class User extends s.Entity
 	
-	  # Create a init method that gets invoked when
-	  # constructing the class
+	  # Create a init method that gets invoked upon construction
 	  init: ->
-	  	# Do stuff on init here
-	
-	  # Set defaults for values
-	  defaults:
-	    country: "Sweden"
+	    # Set defaults for values
+	    @defaults:
+	      country: "Sweden"
+
+	    # Specify fields that should ONLY be allowed in this
+	    # entity. Non-specified fields will not appear in the
+	    # entity. Note that without the "fields"-property shown
+	    # below, all fields are allowed.
+	    @fields =
+	  	  name:    true
+	  	  age:     true
+	  	  country: true
 	    
 	  # Create a custom setter that appends followers
 	  # to the followers propery assuming it being an
@@ -118,14 +127,7 @@ Use the `spiggEntity` by extending it as shown below:
 	    obj.followers.push str
 	    false
 	    
-	  # Specify fields that should ONLY be allowed in this
-	  # entity. Non-specified fields will not appear in the
-	  # entity. Note that without the "fields"-property shown
-	  # below, all fields are allowed.
-	  fields:
-	  	name:    true
-	  	age:     true
-	  	country: true
+
 	    
 	# Create user by passing arguments to the constructor 
 	#  - Note that user will also contain inherited 

@@ -1,21 +1,22 @@
 s = require("../lib/spigg.coffee")
 class User extends s.Entity
-  defaults: 
-    country: "Sweden"
-    followers: []
-    meta:
-      created: new Date()
-   
-  fields:
-    name:      true
-    friends:   false
-    town:      true
-    age:       true
-    followers: true
-    email:     true
-    
+  
   init: ->
     @status = "Initialized"
+    
+    @defaults =  
+      country: "Sweden"
+      followers: []
+      meta:
+        created: new Date()
+     
+    @fields = 
+      name:      true
+      friends:   false
+      town:      true
+      age:       true
+      followers: true
+      email:     true
     
   isAdult: ->
     switch @data.country

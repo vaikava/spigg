@@ -1,11 +1,11 @@
 class spiggEntity
-  constructor: (d, defs) ->
+  constructor: () ->
     @data = {}
     @fields = @fields ? {}
     @default_val = @default_val ? null
-    @_setDefaults() if @defaults and !defs
-    @_setObject(d) if d
     @init() if typeof @init is 'function'
+    @_setDefaults() if @defaults and !arguments[1]
+    @_setObject(arguments[0]) if arguments[0]
 
   get: (k) ->
     return @data unless k
@@ -46,7 +46,7 @@ class spiggEntity
     @
 
   _setDefaults: ->
-    @data[k] = v for k, v of @defaults if @defaults isnt {}
+    @data[k] = v for k, v of @defaults
     @
 
   _set: (k, v) ->
@@ -82,13 +82,15 @@ class spiggEntity
       o[i]
   
     arr.reduce walker, @data
-    
+  
+  ###
   _setChanged: (context) ->
     context.revision++
     md5 = crypto.createHash('md5').update(JSON.stringify context.data).digest("hex")
     context.revisions[context.revision] = context.data
     context.changed = true
-    
+  ###
+
 module.exports.Entity = spiggEntity
 
 class spiggMapper

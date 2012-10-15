@@ -104,10 +104,12 @@ describe "spigg.js", ->
         u = new user
         d = new Date()
         u.set "meta.last_loggedin", d
+        assert.ok u.data.meta.last_loggedin isnt null
         assert.ok require("util").isDate(u.get("meta").last_loggedin)
       
       it "Can get dot-notated fields", ->
         u = new user
+        u.data.meta.last_loggedin = new Date()
         assert.ok u.get("meta.last_loggedin") isnt null
         assert.ok require("util").isDate(u.get("meta.last_loggedin"))
       
