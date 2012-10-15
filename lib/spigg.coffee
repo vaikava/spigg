@@ -2,15 +2,10 @@ class spiggEntity
   constructor: (d, defs) ->
     @data = {}
     @default_val = @default_val ? null
+    @_setDefaults if @defaults and !arguments[1]
     @_setDefaults() if @defaults and !defs
     @fields = @fields ? {}
-    #events =  require("events")
-    #crypto =  require("crypto")
-    #@events = new events.EventEmitter()
-    #@events.on "change", @_setChanged
-    #@revision = 0
-    #@revisions = {}
-    @_setObject(d) if d
+    @_setObject(d) if arguments[0]
     @init() if typeof @init is 'function'
 
   get: (k) ->

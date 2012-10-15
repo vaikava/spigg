@@ -45,7 +45,7 @@ class User extends s.Entity
     n/1000
 
   _setFollowers: (str, obj) ->
-    obj.followers = obj.followers ? []
+    #obj.followers = obj.followers ? []
     obj.followers.push str
     false
         
