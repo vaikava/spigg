@@ -81,11 +81,9 @@ class spiggEntity
       o[i]
   
     arr.reduce walker, @data
-    @data = @_filter()
+    @data = @_filter() # Call filter
     
   _filter: (obj, fields) ->
-    
-
     obj ?=    @data
     fields ?= @fields
     o =       {}
