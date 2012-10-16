@@ -1,12 +1,12 @@
 class spiggEntity
-  constructor: () ->
+  constructor: (d, skipDefaults)->
     @data = {}
     @fields = @fields ? {}
     @default_val = @default_val ? null
     @init() if typeof @init is 'function'
-    @_setDefaults() if @defaults and !arguments[1]
-    @_setObject(arguments[0]) if arguments[0]
-
+    @_setDefaults() if @defaults and !skipDefaults
+    @_setObject(d) if d
+    
   get: (k) ->
     return @data unless k
     return @_getDotNotated(k) if ~k.indexOf "."
@@ -53,21 +53,20 @@ class spiggEntity
     nv = @_callCustomSetter(k, v)
     if nv is false then return null else v = nv
     
-    if @fields isnt {}
-      @data[k] = v if @fields[k]
-    else
-      @data[k] = v
+    @data[k] = v
+    
+    @data = @_filter() # Call filter!
     
    _setObject: (o) ->
-     @_set(k, v) for k, v of o
-  
+     @_set(k, v) for k, v of @_filter(o)
+    
   _callCustomSetter: (k, v) ->
     method = '_set' + k.substr(0, 1).toUpperCase() + k.substr(1)
     v = @[method](v, @.data)  if typeof @[method] is 'function'
     v
   
   _getDotNotated: (k) ->
-    walker = (o, i) -> o[i] # ? @default_val
+    walker = (o, i) -> o[i]
     k.split(".").reduce walker, @data
 
   _setDotNotated: (k, v) ->
@@ -82,7 +81,22 @@ class spiggEntity
       o[i]
   
     arr.reduce walker, @data
-  
+    @data = @_filter()
+    
+  _filter: (obj, fields) ->
+    
+
+    obj ?=    @data
+    fields ?= @fields
+    o =       {}
+    
+    return obj if Object.prototype.toString.call(obj) isnt "[object Object]"
+    
+    for key of obj
+      o[key] = @_filter(obj[key], fields[key]) if fields[key]
+    
+    return o  
+
   ###
   _setChanged: (context) ->
     context.revision++

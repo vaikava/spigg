@@ -32,86 +32,89 @@ describe "spigg.js", ->
       assert.equal u.status, "Initialized"
       
     describe "SET, GET, UNSET, RESET & CLEAR", ->
-      u = new user name: name
       
+      beforeEach ->
+        @u = new user name: name
+        
       it "Default data exists", ->
-        assert.equal u.data.country, "Sweden"
+        assert.equal @u.data.country, "Sweden"
         
       it "Data was set through constructor", ->
-        assert.equal u.data.name, name
-
+        assert.equal @u.data.name, name
+  
       it "Default data was respected", ->
-        assert.equal u.data.country, "Sweden"
+        assert.equal @u.data.country, "Sweden"
         
       it "Gets data by key", ->
-        assert.equal u.get("country"), "Sweden"
+        assert.equal @u.get("country"), "Sweden"
         
       it "Gets all data", ->
-        obj = u.get()
+        obj = @u.get()
         assert.equal sizeOf(obj), 4
         assert.equal obj.country, "Sweden"
           
       it "Sets data by key/value", ->
-        u.set "name", newname
-        assert.equal u.data.name, newname
+        @u.set "name", newname
+        assert.equal @u.data.name, newname
       
       it "Unsets value by key", ->
-        u.unset("name")
-        assert.equal u.get "name", null
-        assert.equal sizeOf(u.get()), 3
-
+        @u.unset("name")
+        assert.equal @u.get "name", null
+        assert.equal sizeOf(@u.get()), 3
+   
       it "Stringifies propertly", ->
-        u.unset("meta")
-        str = JSON.stringify(country: "Sweden", followers: [])
-        assert.equal u.toJSON(), str
-        assert.equal u.toString(), str
+        @u.unset("meta")
+        str = JSON.stringify(country: "Sweden", followers: [], name: "John Doe")
+        assert.equal @u.toJSON(), str
+        assert.equal @u.toString(), str
         
       it "Resets data back to defaults", ->
-        u.set "name", name
-        u.reset()
-        obj = u.get()
+        @u.set "name", name
+        @u.reset()
+        obj = @u.get()
         
         assert.equal sizeOf(obj), 3
-        assert.equal u.get "name", null
-        assert.equal u.get("country"), "Sweden"
+        assert.equal @u.get "name", null
+        assert.equal @u.get("country"), "Sweden"
         assert.equal obj.country, "Sweden"
         
       it "Can set by object", ->
-        u = new user
-        u.set age: 20, town: "Stockholm"
-        assert.equal sizeOf(u.get()), 5
-        assert.equal u.get("age"), 20
-        assert.equal u.get("town"), "Stockholm"
+        @u.set age: 20, town: "Stockholm"
+        assert.equal sizeOf(@u.get()), 6
+        assert.equal @u.get("age"), 20
+        assert.equal @u.get("town"), "Stockholm"
       
       it "Can clear data", ->
-        u.clear()
-        assert.equal sizeOf(u.get()), 0
-
+        @u.clear()
+        assert.equal sizeOf(@u.get()), 0
+  
       it "Can set data through constructor without defaults", ->
         u = new user(name: name, true)
         assert.equal sizeOf(u.get()), 1
         assert.equal u.data.name, name
         assert.equal u.data.country, null
-
-      it "Can set only allowed fields", ->
-        u = new user(name: name, friends: true, notAllowed: true)
+  
+      it "Can set only allowed fields through setters", ->
+        @u.set "friends", []
+        assert.equal u.get("friends"), null
+        
+      it "Can set only allowed fields through constructor", ->
+        u = new user( name: name, friends: true)
         assert.equal sizeOf(u.get()), 4
         assert.equal u.get("friends"), null # friends is disabled
-        assert.equal u.get("notAllowed"), null # notAllowed is not specified
         assert.deepEqual u.get("followers"), [] # followers is allowed
      
       it "Can set dot-notated fields", ->
-        u = new user
         d = new Date()
-        u.set "meta.last_loggedin", d
-        assert.ok u.data.meta.last_loggedin isnt null
-        assert.ok require("util").isDate(u.get("meta").last_loggedin)
+        @u.set "meta.lastlogin", d
+        assert.ok @u.data.meta.lastlogin isnt null
+        assert.ok require("util").isDate(@u.get("meta").lastlogin)
       
       it "Can get dot-notated fields", ->
-        u = new user
-        u.data.meta.last_loggedin = new Date()
-        assert.ok u.get("meta.last_loggedin") isnt null
-        assert.ok require("util").isDate(u.get("meta.last_loggedin"))
+        #@u = new user
+        @u.data.meta.lastlogin = new Date()
+        assert.ok @u.get("meta.lastlogin") isnt null
+        assert.ok require("util").isDate(@u.get("meta.lastlogin"))
       
     describe "Modification of data", ->
       

@@ -11,12 +11,16 @@ class User extends s.Entity
         created: new Date()
      
     @fields = 
+      country:   true
       name:      true
-      friends:   false
       town:      true
       age:       true
       followers: true
       email:     true
+      email_md5: true
+      meta:
+        lastlogin: true
+        votes:     true
     
   isAdult: ->
     switch @data.country
