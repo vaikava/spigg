@@ -94,6 +94,10 @@ describe "spigg.js", ->
       @u.set name: "John Doe"  
       assert.deepEqual @u.data, {friends: [], name: "john doe"}
 
+    it "Custom setter can modify object", ->
+      @u.set start: "start"
+      assert.deepEqual @u.data, {friends: [], start: "start", end: "end"}
+      
     it "Can overwrite set properties", ->
       @u.set name: "John Doe"
       assert.equal @u.data.name, "john doe"

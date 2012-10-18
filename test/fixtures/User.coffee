@@ -7,6 +7,8 @@ class User extends s.Entity
     @fields =
       name:  true
       email: true
+      start: true
+      end:   true
       meta:
         lastlogin: true
 
@@ -16,7 +18,11 @@ class User extends s.Entity
     @setters = 
       name: (str) ->
         str.toLowerCase()
-
+      
+      start: (str, obj) ->
+        obj.end = "end"
+        return str
+      
 class UserMapper extends s.Mapper
    #save: (doc) ->
    # return @isEntity doc

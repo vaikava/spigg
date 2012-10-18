@@ -86,7 +86,7 @@ class SpiggEntity
   # Runs a object against a similarily mapped object containing
   # setters on a per-property basis.
   _set: (data, setters, val) ->
-    return setters(val) if val and typeof setters is 'function'
+    return setters(val, @data) if val and typeof setters is 'function'
     o = {}
     
     for key of data
