@@ -1,158 +1,182 @@
-assert = require("assert")
-sizeOf = (obj) ->
-  size = 0
-  key = undefined
-  for key of obj
-    size++ if obj.hasOwnProperty(key)
-  size
-
+assert = require("chai").assert
+User = require("./fixtures/User").User
+spigg = require("../lib/spigg.coffee")
+mapper = require("./fixtures/User").UserMapper
 
 describe "spigg.js", ->
   
-  describe "spiggEntity", ->
+  describe "Separated methods", ->
     
-    user = require("./fixtures").User
-    name = "John Doe"
-    newname = "Jane Doe"
-    
-    u = new user
-    
-    it "Has all methods present", ->
-      assert.equal(typeof u.set,        "function")
-      assert.equal(typeof u.get,        "function")
-      assert.equal(typeof u.unset,      "function")
-      assert.equal(typeof u.reset,      "function")
-      assert.equal(typeof u.toJSON,     "function")
-      assert.equal(typeof u.toString,   "function")
-      assert.equal(typeof u.toModifier, "function")
-      assert.equal(typeof u.clear,      "function")
-    
-    it "Internal constructor gets called", ->
-      u = new user name: name
-      assert.equal u.status, "Initialized"
-      
-    describe "SET, GET, UNSET, RESET & CLEAR", ->
-      
-      beforeEach ->
-        @u = new user name: name
-        
-      it "Default data exists", ->
-        assert.equal @u.data.country, "Sweden"
-        
-      it "Data was set through constructor", ->
-        assert.equal @u.data.name, name
-  
-      it "Default data was respected", ->
-        assert.equal @u.data.country, "Sweden"
-        
-      it "Gets data by key", ->
-        assert.equal @u.get("country"), "Sweden"
-        
-      it "Gets all data", ->
-        obj = @u.get()
-        assert.equal sizeOf(obj), 4
-        assert.equal obj.country, "Sweden"
-          
-      it "Sets data by key/value", ->
-        @u.set "name", newname
-        assert.equal @u.data.name, newname
-      
-      it "Unsets value by key", ->
-        @u.unset("name")
-        assert.equal @u.get "name", null
-        assert.equal sizeOf(@u.get()), 3
-   
-      it "Stringifies propertly", ->
-        @u.unset("meta")
-        str = JSON.stringify(country: "Sweden", followers: [], name: "John Doe")
-        assert.equal @u.toJSON(), str
-        assert.equal @u.toString(), str
-        
-      it "Resets data back to defaults", ->
-        @u.set "name", name
-        @u.reset()
-        obj = @u.get()
-        
-        assert.equal sizeOf(obj), 3
-        assert.equal @u.get "name", null
-        assert.equal @u.get("country"), "Sweden"
-        assert.equal obj.country, "Sweden"
-        
-      it "Can set by object", ->
-        @u.set age: 20, town: "Stockholm"
-        assert.equal sizeOf(@u.get()), 6
-        assert.equal @u.get("age"), 20
-        assert.equal @u.get("town"), "Stockholm"
-      
-      it "Can clear data", ->
-        @u.clear()
-        assert.equal sizeOf(@u.get()), 0
-  
-      it "Can set data through constructor without defaults", ->
-        u = new user(name: name, true)
-        assert.equal sizeOf(u.get()), 1
-        assert.equal u.data.name, name
-        assert.equal u.data.country, null
-  
-      it "Can set only allowed fields through setters", ->
-        @u.set "friends", []
-        assert.equal u.get("friends"), null
-        
-      it "Can set only allowed fields through constructor", ->
-        u = new user( name: name, friends: true)
-        assert.equal sizeOf(u.get()), 4
-        assert.equal u.get("friends"), null # friends is disabled
-        assert.deepEqual u.get("followers"), [] # followers is allowed
-     
-      it "Can set dot-notated fields", ->
-        d = new Date()
-        @u.set "meta.lastlogin", d
-        assert.ok @u.data.meta.lastlogin isnt null
-        assert.ok require("util").isDate(@u.get("meta").lastlogin)
-      
-      it "Can get dot-notated fields", ->
-        #@u = new user
-        @u.data.meta.lastlogin = new Date()
-        assert.ok @u.get("meta.lastlogin") isnt null
-        assert.ok require("util").isDate(@u.get("meta.lastlogin"))
-      
-    describe "Modification of data", ->
-      
-      it "Can modify by closure", ->
-        u = new user name: name
-        u.toModifier((obj)->
-          obj.name = name+name
-          obj
-        )
-        
-        assert.equal u.get("name"), name+name
-      
-      it "Can set data with custom setters", ->
-        u = new user name: name, email: "JOHN@EXAMPLE.ORG"
-        assert.equal u.get("name"), name
-        assert.equal u.get("email"), "john@example.org"
-        assert.equal u.get("email_md5"), "4af4e151ecbc79407c07ad040862465c"
-        assert.equal sizeOf(u.get()), 6
-        
-      it "Custom setters apply when using dot notation", ->
-        u = new user
-        u.set("meta.votes", 12000)
-        assert.equal u.get("meta").votes, 12
-      
-      it "Custom setters can return false for object modification", ->
-        u = new user
-        u.set("followers", "Jane Doe")
-        assert.deepEqual u.get("followers"), ["Jane Doe"] 
+    beforeEach ->
+      @entity = new spigg.Entity
 
-  
-  describe "spiggMapper", ->
-    mapper = require("./fixtures").UserMapper
-    user = require("./fixtures").User
-    mapper = new mapper
-    user = new user name: "John Doe"
+    it "_set works as expected by invoking custom setters", ->
     
-    it "Can validate entity", ->
-      assert.ok(mapper.save(user))
-      assert.ok(!mapper.save({k: "I AM ZE OBJECT"}))
-      assert.ok(!mapper.save("I AM ZE STRING"))
-      assert.ok(!mapper.save(["I AM ZE ARRAY"]))
+      obj = 
+        name: "JOHN DOE"
+        ihaznosetter: "BRR"
+        nested:
+          email: "INFO@EXAMPLE.COM"  
+      
+      setters =
+        name: (str) ->
+          str.toLowerCase()
+        nested:
+          email: (str) ->
+            str.toLowerCase()
+      
+      expected =
+        name: "john doe"
+        ihaznosetter: "BRR"
+        nested:
+          email: "info@example.com"
+          
+      assert.deepEqual @entity._set(obj, setters), expected
+      
+    it "_merge works as expected", ->
+      o = @entity._merge({name: "John Doe"}, {email: "info@example.com"})
+      assert.deepEqual o, name: "John Doe", email: "info@example.com"
+    
+    it "_merge overwrites props in second argument", ->  
+      o = @entity._merge({name: "Jane Doe"}, {name: "John Doe"})
+      assert.deepEqual o, name: "Jane Doe"
+    
+    it "_filter works correctly", ->
+      
+      obj =
+        name: "John Doe"
+        email: "info@example.com"
+        nested:
+          value:      []
+          notAllowed: true
+          
+      allowed = 
+        name:  true
+        email: false
+        nested:
+          value: true
+      
+      # Email should not exist
+      expected = 
+        name:   obj.name
+        nested: 
+          value: []
+      
+      result = @entity._filter(obj, allowed)
+      assert.deepEqual result, expected
+
+
+  describe "Extending entity", ->
+    
+    beforeEach -> @u = new User
+      
+    it "Default data was set", ->
+      assert.deepEqual @u.data, friends: [] 
+      
+    it "Can set data through constructor", ->
+      @u = new User name: "John doe"
+      assert.deepEqual @u.data, {friends: [], name: "john doe"}
+    
+    it "Can set by key/value", ->
+      @u.set "name", "John Doe"
+      assert.deepEqual @u.data, {friends: [], name: "john doe"}
+    
+    it "Can only set allowed properties", ->
+      @u.set {key: "value", name: "John Doe", meta: email: "info@example.com"}
+      assert.ok !@u.data.key
+      assert.ok !@u.data.meta.email
+    
+    it "Set with empty object doesnt effect current data", ->
+      @u.set({})
+      assert.deepEqual @u.data, {friends: []}
+      
+    it "Can set from object", ->
+      @u.set name: "John Doe"  
+      assert.deepEqual @u.data, {friends: [], name: "john doe"}
+
+    it "Can overwrite set properties", ->
+      @u.set name: "John Doe"
+      assert.equal @u.data.name, "john doe"
+      @u.set name: "Jane Doe"
+      assert.equal @u.data.name, "jane doe"
+          
+    it "Can get by key", ->
+      @u.set "name", "John Doe"
+      assert.equal @u.get("name"), "john doe"
+    
+    it "Get without arguments returns all properties", ->
+      assert.deepEqual @u.get(), {friends: []}
+      
+    it "Can get nested properties by dot notation", ->
+      d = new Date()
+      @u.set meta: lastlogin: d
+      assert.equal @u.get("meta.lastlogin"), d
+      
+    it "Missing properties return the default value", ->
+      assert.equal @u.get "missingprop", null
+      
+    it "Can change the default value", ->
+      @u.setDefaultValue(false)
+      assert.equal @u.get("missingprop"), false
+
+    it "Can unset properties", ->
+      @u.unset "friends"
+      assert.ok !@u.data.friends
+      assert.lengthOf Object.keys(@u.get()), 0
+            
+    it "Can reset back to defaults", ->
+      @u.set "name", "John Doe"
+      assert.lengthOf Object.keys(@u.get()), 2
+      @u.reset()
+      assert.deepEqual @u.get(), {friends: []}
+    
+    it "Can clear out the entity", ->
+      @u.set "name", "John Doe"
+      assert.lengthOf Object.keys(@u.get()), 2
+      @u.clear()
+      assert.deepEqual @u.get(), {}  
+
+  describe "Revisions", ->
+
+    beforeEach -> @u = new User
+    
+    it "Setting properties creates revisions", ->
+      @u.set name: "Jane Doe"
+      assert.lengthOf @u.revisions, 1
+      assert.deepEqual @u.revisions[0], @u.data
+
+    it "Changing properties creates multiple revisions", ->
+      @u.set name: "John Doe"
+      @u.set name: "Jane Doe"
+      assert.lengthOf @u.revisions, 2
+      assert.equal @u.revisions[0].name, "john doe"
+      assert.equal @u.revisions[1].name, "jane doe"
+
+    it "Can get all revisions", ->
+      @u.set name: "John Doe"
+      @u.set name: "Jane Doe"
+      assert.lengthOf @u.getRevision(),2
+    
+    it "Can get a specific revision by number", ->
+      @u.set name: "John Doe"
+      @u.set name: "Jane Doe"
+      assert.equal @u.getRevision(0).name, "john doe"
+    
+    it "Can get a historic revision", ->
+      @u.set name: "John Doe"
+      @u.set name: "Jane Doe"
+      assert.equal @u.getRevision(-1).name, "john doe"
+            
+  describe "spiggMapper", ->
+    mapper = new mapper
+    user = new User name: "John Doe"
+    
+    it "isEntity works as expected", ->
+      assert.ok(mapper.isEntity(user))
+      assert.ok(!mapper.isEntity({k: "I AM ZE OBJECT"}))
+      assert.ok(!mapper.isEntity("I AM ZE STRING"))
+      assert.ok(!mapper.isEntity(["I AM ZE ARRAY"]))
+   
+    it "hasData works as expected", ->
+      assert.deepEqual mapper.hasData(user), friends: [], name: "john doe"
+      

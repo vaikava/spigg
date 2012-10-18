@@ -1,88 +1,103 @@
-class spiggEntity
-  constructor: (d, skipDefaults)->
-    @data = {}
-    @fields = @fields ? {}
-    @default_val = @default_val ? null
-    @init() if typeof @init is 'function'
-    @_setDefaults() if @defaults and !skipDefaults
-    @_setObject(d) if d
+events = require("events")
+
+class SpiggEntity
+
+  constructor: (d, noDefaults)->
+    # Create default values
+    @data =      {}
+    @defaults =  {}
+    @fields =    {}
+    @setters =   {}
+    @revisions = []
+    @default_val = null
+    @events = new events.EventEmitter()
+    @events.on "change", @_handleChange
     
+    # Call init method if defined, set defaults & data
+    @init() if typeof @init is 'function'
+    
+    @data = @_merge @defaults, {} if @defaults and !noDefaults
+    #@_setObject(d) if d
+    @set d if d
+  
+  # Returns a property from the entity
   get: (k) ->
     return @data unless k
     return @_getDotNotated(k) if ~k.indexOf "."
     @data[k] ? @default_val
-    
-  set: (k, v) ->
-    return @_setObject(k) if typeof k is 'object'
-    return @_setDotNotated(k, v) if ~k.indexOf "."
-    
-    @_set k, v
 
-  setUnsafe: (k, v) ->
-    @data[k] = v
-    @    
+  # Sets a property in the entity either by key/value
+  # or from a full object by calling the setter accordingly
+  set: (k, v) ->
+    # Check if we have key/value args. Merge them into an object if so 
+    if arguments.length is 2
+      o = {}
+      o[k] = v
+      k = o
+    
+    # Set the data by :
+    # 1: Running it through eventual defined setters
+    # 1: Filtering it for valid fields
+    # 2: Overwrite current data
+    @data = @_merge(@_filter(@_set(k, @setters), @fields), @data)
+    
+    # Invoke the change event to create revisions
+    @events.emit "change", @
+    
+  # Sets the default value to be returned for missing properties
+  # when using the get()-method
+  setDefaultValue: (v) ->
+    @default_val = v
+    
+  # Resets the entity back to defaults 
+  reset: ->
+    @data = @_merge @defaults, {}
   
+  # Empties the entity completely, including defaults
+  clear: ->
+    @data = {}
+
+  # Drops a property from the entity
   unset: (k) ->
     delete @data[k]
     @
-    
-  reset: ->
-    @data = {}
-    @_setDefaults()
-    @
   
-  clear: ->
-    @data = {}
-    @
+  # Returns a given revision of the entity by id
+  getRevision: (n) ->
     
-  toJSON: -> 
-    JSON.stringify @data
+    # Return all revisions if n isnt set
+    return @revisions if typeof n is "undefined"
     
-  toString: ->
-    JSON.stringify @data
+    # Returns historic revisions when given negative number
+    return @revisions[@revisions.length + n + -1] if n < 0
     
-  toModifier: (fn) ->
-    @data = fn @data
-    @
-
-  _setDefaults: ->
-    @data[k] = v for k, v of @defaults
-    @
-
-  _set: (k, v) ->
-    nv = @_callCustomSetter(k, v)
-    if nv is false then return null else v = nv
-    
-    @data[k] = v
-    
-    @data = @_filter() # Call filter!
-    
-   _setObject: (o) ->
-     @_set(k, v) for k, v of @_filter(o)
-    
-  _callCustomSetter: (k, v) ->
-    method = '_set' + k.substr(0, 1).toUpperCase() + k.substr(1)
-    v = @[method](v, @.data)  if typeof @[method] is 'function'
-    v
+    # Returns revision by number (first rev is always 0)
+    return @revisions[n] ? {}
   
+  # Returns how many current revisions exists in the entity
+  revisions: ->
+    return @revisions.length
+      
+  # Returns a property from @data by dot notation
   _getDotNotated: (k) ->
     walker = (o, i) -> o[i]
     k.split(".").reduce walker, @data
-
-  _setDotNotated: (k, v) ->
-    arr = k.split(".")
-    _k = arr[arr.length - 1]
     
-    nv = @_callCustomSetter(arr.join("_"), v)
-    if nv is false then return null else v = nv
+  # Runs a object against a similarily mapped object containing
+  # setters on a per-property basis.
+  _set: (data, setters, val) ->
+    return setters(val) if val and typeof setters is 'function'
+    o = {}
     
-    walker = (o, i) ->
-      o[i] = v if i is _k
-      o[i]
+    for key of data
+      if setters[key]
+        o[key] = @_set(data[key], setters[key], data[key])
+      else
+        o[key] = data[key]
+    o
   
-    arr.reduce walker, @data
-    @data = @_filter() # Call filter
-    
+  # Filters a passed object against another object
+  # containing allowed fields
   _filter: (obj, fields) ->
     obj ?=    @data
     fields ?= @fields
@@ -93,20 +108,31 @@ class spiggEntity
     for key of obj
       o[key] = @_filter(obj[key], fields[key]) if fields[key]
     
-    return o  
+    return o
 
-  ###
-  _setChanged: (context) ->
-    context.revision++
-    md5 = crypto.createHash('md5').update(JSON.stringify context.data).digest("hex")
-    context.revisions[context.revision] = context.data
-    context.changed = true
-  ###
+  # Do a shallow copy of the first obj, overwritting the properties
+  # in the second
+  _merge: (a, b) ->
+    for k, v of a
+      b[k] = v
+    b
+    
+  # Creates revisions when being invoked automatically by the
+  # eventemitter
+  _handleChange: (context) ->
+    context.revisions.push context._merge(context.data, {})
 
-module.exports.Entity = spiggEntity
+class SpiggMapper
 
-class spiggMapper
+  # Checks whether or not the passed argument is 
+  # a spiggEntity or not
   isEntity: (v) ->
-    v instanceof spiggEntity ? false
+    v instanceof SpiggEntity
 
-module.exports.Mapper = spiggMapper
+  # Checks if a passed argument is a entity and if so,
+  # returns the data it contains
+  hasData: (v) ->
+    return v.data if @isEntity(v)
+  
+module.exports.Entity = SpiggEntity
+module.exports.Mapper = SpiggMapper

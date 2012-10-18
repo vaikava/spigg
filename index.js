@@ -1,2 +1,2 @@
-require('coffee-script');
-module.exports = require('./lib/spigg');
+//require('coffee-script');
+module.exports = require('./dist/spigg');
