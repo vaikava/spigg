@@ -19,8 +19,6 @@
 </head>
 <body>
 
-
-
 <div class="container">
   <div class="sixteen columns">
     <h1>spigg.js</h1>
@@ -64,7 +62,7 @@
     <p>
       When working with user submitted data, using a lot of <code>setters</code> isn't unusual. Setting
       email addresses to lowercase and trimming off spaces, for instance. With <em>spigg</em> setters on any
-      depth are automatically recognized and run whenever the assigned property changes.
+      depth are automatically recognized and run whenever the assigned property changes.g
     </p>
     
   	<h3>Quick example</h3>
@@ -157,10 +155,146 @@ app.post "/users", (req, res) ->
     res.send JSON.stringify(err), 400
 
 app.listen 3000 
-</pre>
-</code>       
+</code></pre>
 
-  <p>Above is written in coffeescript. Please use <a href="http://js2coffee.org/">this tool</a> to convert to plain JS.</p>
+    <p>Above is written in coffeescript. Please use <a href="http://js2coffee.org/">this tool</a> to convert to plain JS.</p>
+
+  </div>
+	
+	
+  <div class="sixteen columns">	
+	<h3>Documentation: Entity</h3>
+	
+	<h4>Creating entities</h4>
+	<p>Create your own entity by extending the <code>Entity</code>-class provided by spigg, as shown below:</p>
+	
+<pre><code data-language="coffeescript">s = require("spigg")
+class myEntity extends s.Entity	
+</code></pre>
+
+	<h4>Get &amp; set data</h4>
+<p>Set data by passing arguments to the constructor</p>
+<pre><code data-language="coffeescript">u = new user(name: "John Doe")
+</code></pre>	
+
+<p>Set data by key/value</p>
+<pre><code data-language="coffeescript">u.set "name", "Jane Doe"
+</code></pre>
+
+<p>Set data by object</p>
+<pre><code data-language="coffeescript">u.set {name: "Jane Doe"}
+</code></pre>
+
+<p>Get all data</p>
+<pre><code data-language="coffeescript">u.get()
+</code></pre>
+
+<p>Get data by key</p>
+<pre><code data-language="coffeescript">u.get("name")
+</code></pre>
+
+<p>Get data by dot notation</p>
+<pre><code data-language="coffeescript">u.get("meta.lastlogin")
+</code></pre>
+
+<p>Unset a property from the entity</p>
+<pre><code data-language="coffeescript">u.unset("name")
+</code></pre>
+
+<p>Reset the entity back to default values</p>
+<pre><code data-language="coffeescript">u.reset()
+</code></pre>
+
+<p>Clear the entity</p>
+<pre><code data-language="coffeescript">u.clear() # All properties are now removed.
+</code></pre>		
+	
+	<h4>Allowed fields</h4>
+	<p>
+	  Create a property inside the <code>init</code>-method, named <code>fields</code> which should
+	  represent the structure of your data.
+	  By default any properties are allowed unless the <code>fields</code>-object has been set. <br />
+	</p>
+	
+<pre><code data-language="coffeescript">s = require("spigg")
+class myEntity extends s.Entity	
+  init: ->
+    # This entity can now only contain name, tweets & meta.lastlogin. Everything else is rejected.
+    @fields =
+      name:    true
+      tweets:  true
+      cats:    false
+      meta:
+        lastlogin: true
+</code></pre>
+
+	<h4>Custom setters</h4>
+	<p>
+	  Add setters inside the <code>init</code>-method as a representation of how your
+	  data is organized. Setters are automatically invoked when a property changes and
+	  modifies the value of said property accordingly.
+	</p>
+<pre><code data-language="coffeescript">s = require("spigg")
+class myEntity extends s.Entity	
+  init: ->
+    @setters =
+      name: (str) ->
+        str.toLowerCase()
+      meta: 
+        lastlogin: (timestamp) ->
+          new Date(timestamp*1000)
+</code></pre>	
+
+	<h4>Calling the filter method</h4>	
+	<p>
+	  In certain cases, it is preferably to not allow updates of all properties, so you can write your own
+	  impmentation of the <code>_filter</code>-method already available in the entity to remove non-permitted fields as
+	  shown below:
+	</p>
+
+<pre><code data-language="coffeescript">
+class myEntity extends s.Entity
+
+  @fieldsAllowedInUpdate:
+    name:  true
+    email: true
+  
+  isValidForUpdate: (callback) ->
+    errors = []
+    errors.push "Name is missing" unless @data.name
+    callback(errors, @_filter(@data, @fieldsAllowedInUpdate))
+	
+</code></pre>
+
+  <div class="sixteen columns">	
+	<h3>Documentation: Mapper</h3>
+	
+	<h4>Creating mappers</h4>
+	<p>Create your own mapper by extending the <code>Mapper</code>-class provided by spigg, as shown below:</p>
+	
+<pre><code data-language="coffeescript">s = require("spigg")
+class myMapper extends s.Mapper
+</code></pre>
+
+
+	<h4>Ensure origin of data</h4>
+	<p>
+	  Mappers should generally not be aware of entities, but this is a good exception if you need to make sure
+	  that data passed to a method inside a <code>mapper</code> must origin from an entity. Invoke the provided
+	  <code>isEntity</code>-method as shown below accordingly:
+	</p>
+
+<pre><code data-language="coffeescript">s = require("spigg")
+class myMapper extends s.Mapper
+  save: (user) ->
+    db.save user.data if @isEntity user	
+</code></pre>
+	
+	
+
+</div>	
+	
+  <div class="sixteen columns">	
   	<h3>Development</h3>
 	<p><em>spigg</em> is released under the MIT license and is <a href="https://github.com/vaikava/spigg">hosted at Github</a>, so 
 	feel free to contribute.
