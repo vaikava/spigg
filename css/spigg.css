@@ -1,0 +1,55 @@
+body {
+	background: #eee;
+	font: 14px/21px "Big Caslon", "Book Antiqua", "Palatino Linotype", Georgia, serif;
+	/*
+	font: 14px/21px Garamond, Baskerville, "Baskerville Old Face", "Hoefler Text", "Times New Roman", serif;
+	*/
+	color: #333;
+	-webkit-font-smoothing: antialiased; /* Fix for webkit rendering */
+	-webkit-text-size-adjust: 100%;
+}
+
+h1, h2, h3, h4 { font-weight: normal}
+
+h1 {
+	font-size: 4em;
+	color: #000;
+	margin-bottom: 40px;
+}
+h2 {
+	font-size: 1.8em;
+	font-style: italic;
+	margin-left: 10px;
+	color: #666;
+}
+
+h3 {
+	font-size: 2em;
+	margin: 30px 0 30px 0;
+}
+h4 {
+	margin: 0;
+	font-size: 1.4em;
+	font-style: italic;
+}
+
+ol li {
+	font-size: 1em;
+}
+
+
+p { 
+	margin: 0 0 20px 0;
+	font-size: 1.3em;
+	line-height: 1.6em;
+}
+p img { margin: 0; }
+p.lead { font-size: 21px; line-height: 27px; color: #777;  }
+
+em { font-style: italic; }
+strong { font-weight: bold; color: #333; }
+small { font-size: 80%; }
+
+a, a:visited { color: #333; text-decoration: underline; outline: 0; }
+a:hover, a:focus { color: #000; }
+p a, p a:visited { line-height: inherit; }

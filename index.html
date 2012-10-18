@@ -1,162 +1,186 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<title>spigg.js - bringing data mappers to node.js</title>
-		<style type="text/css" media="screen">
-			/*
-			Copyright (c) 2011, Yahoo! Inc. All rights reserved.
-			Code licensed under the BSD License:
-			http://developer.yahoo.com/yui/license.html
-			version: 2.9.0
-			*/
-			html{color:#000;background:#FFF}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,select,p,blockquote,th,td{margin:0;padding:0}table{border-collapse:collapse;border-spacing:0}fieldset,img{border:0}address,button,caption,cite,code,dfn,em,input,optgroup,option,select,strong,textarea,th,var{font:inherit}del,ins{text-decoration:none}li{list-style:none}caption,th{text-align:left}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}q:before,q:after{content:''}abbr,acronym{border:0;font-variant:normal}sup{vertical-align:baseline}sub{vertical-align:baseline}legend{color:#000}
-						
-			body {
-			  font-family: Baskerville, "Baskerville Old Face", "Hoefler Text", Garamond, "Times New Roman", serif;
-			  font-size: 14px;
-			  line-height: 200%;
-			  color: #333;
-			  background-color: #fff;
-			  margin-bottom: 100px;
-			}
-			
-			a {
-			  color: #000;
-			}
-			
-			
-			h1 {
-			  color: #000;
-			  font-size: 3.2em;
-			  margin-bottom: 20px;
-			}
-			
-			h2 {
-			  color: #000;
-			  font-size: 2.4em;
-			  margin-top: 30px;
-			  margin-bottom: 10px;
-			}
-			
-			p {
-			  font-size: 1.6em;
-			  width: 700px;
-			}
-			
-			.container {
-              margin: 60px 0 0 60px;
-              width: 800px;
-			}
-			
-			em {
-			  font-style: italic;
-			  color: #000;
-			}
-			
-			.codepusher {
-			  margin-bottom: 30px;
-			}
-			
-			code {
-				color: #000;
-				font-family: Consolas, monaco, monospace;
-				font-size: 0.8em;
-				background-color: #EEE;
-				padding: 2px 5px 2px 5px;
-			}
-			
-		</style>
-		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
-	</head>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+<head>
+  <title>spigg.js</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <!-- <link rel="stylesheet" href="css/base.css"> !-->
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/spigg.css"/>
+  <link rel="stylesheet" media="all" type="text/css" href="css/themes/obsidian.css" />
+
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+<body>
+
+
+
+<div class="container">
+  <div class="sixteen columns">
+    <h1>spigg.js</h1>
+  </div>
+  <div class="sixteen columns">
 	
-	<body>
-		
-		<div class="container">
-			<h1>spigg.js</h1>
-			
-			<p><strong>spigg.js</strong> brings the <a href="http://martinfowler.com/eaaCatalog/dataMapper.html">data mapper pattern</a> to node.js
-			by introducing <em>entities</em> for your business logic and <em>mappers</em> to house database code, in order to allow modularity and set the cornerstones
-			for DRY principles in your application.<br /><br />
-			<strong>spigg.js</strong> only ships with a minimal featureset to get out of your way and doesn't care about how you store your data or what business logic your application requires.</p>
-			<br />
-			<p>Download the latest version of spigg today by running <code>npm install spigg</code> in your shell.</p><br /><br />
-			
-			<p>Have a look at the full documentation of spigg here: <a href="https://github.com/vaikava/spigg">https://github.com/vaikava/spigg</a></p>
-			<h2>Short example</h2>
-			<div class="codepusher"></div>
-			
-<!-- HTML generated using hilite.me --><div style="background: #111111; overflow:auto;width:auto;color:white;background:black;border:solid gray;border-width:.1em .1em .1em .1em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-style: italic; background-color: #0f140f"># /entities/User.coffee</span>
-<span style="color: #fb660a; font-weight: bold">class</span> <span style="color: #ffffff">User</span> <span style="color: #fb660a; font-weight: bold">extends</span> <span style="color: #ffffff">s.Entity</span><br />
-  <span style="color: #008800; font-style: italic; background-color: #0f140f"># Set your own standard values</span>
-  <span style="color: #fb660a">defaults:</span>
-    <span style="color: #fb660a">country: </span><span style="color: #0086d2">&quot;Sweden&quot;</span>
-    <span style="color: #fb660a">meta:</span>
-      <span style="color: #fb660a">created: </span><span style="color: #fb660a; font-weight: bold">new</span> <span style="color: #ffffff">Date()</span>
+	<h3>Introduction</h3>
+	<p>
+	  <em>spigg</em> brings the <a href="http://martinfowler.com/eaaCatalog/dataMapper.html">data mapper pattern</a> to node.js
+	  by introducing <em>entities</em> for your business logic and <em>mappers</em> to handle persistence. 
+	  The result is modular, testable code to which DRY principles apply .<br /><br />
+	<em>spigg.js</em> ships with a minimal featureset to get out of your way and doesn't care
+	about how you choose to store your data or what business logic your application requires. <br />
+	
+	<h3>Install</h3>
+      <pre><code>$ npm install spigg</code></pre>
+	<p>
+	  Running the above command in your shell will install the latest stable version
+	  of <em>spigg</em>, which currently is <small><code>0.8.0</code></small>. <br />
+	</p>
+  </div>
+  
+  <div class="sixteen columns">
+  	
+  	<h3>Why?</h3>
+  	<p>
+      We needed to apply business logic to data, regardless of whether the data originated from a
+  	  <em>REST API</em>, <em>in-memory-storage</em> or a <em>persistent database</em>. 
+  	  <br />
+  	  The <a href="http://martinfowler.com/eaaCatalog/dataMapper.html">data-mapper</a>
+  	  pattern allowed for per-resource separation between datasource code and 
+  	  business logic, so we decided to roll our own solution as no available library at the time did fit our needs.<br />
+  	  As a bonus our codebase became even more modular, whilst adding minimal complexity.
+	</p>
+  	
+  	<p>
+  	  Centralizing business logic into entities makes a lot of sense, as you can always fire up
+  	  an entity and invoke the custom business logic you defined in it. <br />
+    </p>
     
-  <span style="color: #008800; font-style: italic; background-color: #0f140f"># Build your own functions for business logic</span>
-  <span style="color: #fb660a">isAdult: </span><span style="color: #ffffff">-&gt;</span>
-    <span style="color: #fb660a; font-weight: bold">switch</span> <span style="color: #ffffff">@data.country</span>
-      <span style="color: #fb660a; font-weight: bold">when</span> <span style="color: #0086d2">&quot;Sweden&quot;</span>
-        <span style="color: #fb660a; font-weight: bold">return</span> <span style="color: #fb660a; font-weight: bold">true</span> <span style="color: #fb660a; font-weight: bold">if</span> <span style="color: #ffffff">@data.age</span> <span style="color: #ffffff">&gt;=</span> <span style="color: #0086f7; font-weight: bold">18</span>
-      <span style="color: #fb660a; font-weight: bold">when</span> <span style="color: #0086d2">&quot;UK&quot;</span>
-        <span style="color: #fb660a; font-weight: bold">return</span> <span style="color: #fb660a; font-weight: bold">true</span> <span style="color: #fb660a; font-weight: bold">if</span> <span style="color: #ffffff">@data.age</span> <span style="color: #ffffff">&gt;=</span> <span style="color: #0086f7; font-weight: bold">16</span>        
-      <span style="color: #fb660a; font-weight: bold">else</span> 
-        <span style="color: #fb660a; font-weight: bold">return</span> <span style="color: #fb660a; font-weight: bold">false</span>
+    <p>
+      When working with user submitted data, using a lot of <code>setters</code> isn't unusual. Setting
+      email addresses to lowercase and trimming off spaces, for instance. With <em>spigg</em> setters on any
+      depth are automatically recognized and run whenever the assigned property changes.
+    </p>
+    
+  	<h3>Quick example</h3>
 
-  <span style="color: #008800; font-style: italic; background-color: #0f140f"># Setup validation that applies to your application</span>
-  <span style="color: #fb660a">isValid: </span><span style="color: #ffffff">-&gt;</span>
-    <span style="color: #fb660a; font-weight: bold">return</span> <span style="color: #fb660a; font-weight: bold">false</span> <span style="color: #ffffff">unless</span> <span style="color: #ffffff">@data.name</span>
-    <span style="color: #fb660a; font-weight: bold">return</span> <span style="color: #fb660a; font-weight: bold">false</span> <span style="color: #ffffff">unless</span> <span style="color: #ffffff">@isAdult()</span>
-    <span style="color: #fb660a; font-weight: bold">return</span> <span style="color: #fb660a; font-weight: bold">true</span>
+<pre>
+<code data-language="coffeescript"># /entities/User.coffee
+s = require("spigg")
+class User extends s.Entity
+
+  # Call the init method which is automatically
+  # invoked upon construction by the SpiggEntity
+  init: ->
+    # Optional:
+    # Set a object of fields that are allowed in this entity to
+    # prevent non-permitted properties from being stored.
+    # This is helpful to when you need to build an entity out of 
+    # user submitted data.
+    @fields =
+      name:    true
+      email:   true
+      tweets:  true
+      meta:
+        lastlogin: true
+
+    # Optional:
+    # Create a hashmap of default properties to be used in
+    # the entity.
+    @defaults =
+      tweets:  []
+      meta:
+        lastlogin: new Date()
+      
+    # Optional: 
+    # Store setters that is automatically invoked when you store a property
+    # to your entity. In this example, all stored names will be lowercased.
+    # Note that setters work on depth as well, so you could define nested setters.
+    @setters = 
+      name: (str) ->
+        str.toLowerCase()
+
+    # Here goes your business logic
+    # Example:
+    isValid: (callback) ->
+      errors = []
+      errors.push "Name is missing" unless @data.name
+      callback(errors, @data)
+
+module.exports.User = User</code>
+</pre>
   
-  <span style="color: #fb660a">module.exports = </span><span style="color: #ffffff">User</span>
+<pre><code data-language="coffeescript"># /mappers/User.coffe
+s = require("spigg")
+r = require("requestah")(80)
+class UserMapper extends s.Mapper
+
+  getByEmail: (email, callback) ->
+    callback mysql.query("SELECT * FROM USERS WHERE EMAIL="+email)
   
-<span style="color: #008800; font-style: italic; background-color: #0f140f"># /mappers/User.coffee</span>
-<span style="color: #fb660a; font-weight: bold">class</span> <span style="color: #ffffff">UserMapper</span> <span style="color: #fb660a; font-weight: bold">extends</span> <span style="color: #ffffff">s.Mapper</span>
+  getTweets: (twitterUsername, callback) ->
+    url = [
+      "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=",
+      twitterUsername,
+      "&count=100"
+    ]
+    
+    r.get url.join(""), (res) ->
+      callback res.body
+
+  save: (user, callback) ->
+    callback mysql.query("INSERT INTO USERS...")
+
+
+module.exports.UserMapper = new UserMapper </code>
+</pre>
+
+<pre>
+<code data-language="coffeescript"># /app.coffee  
+express = require("express")
+app =     express()
+app.use express.bodyParser()
+
+app.post "/users", (req, res) ->
+  user =       require("./entities/Users")
+  userMapper = require("./mappers/Users")
+  user =       new User req.body
+
+  user.isValid (err, data) ->
+    userMapper.save user
+    return res.send 201 unless err
+    res.send JSON.stringify(err), 400
+
+app.listen 3000 
+</pre>
+</code>       
+
+  <p>Above is written in coffeescript. Please use <a href="http://js2coffee.org/">this tool</a> to convert to plain JS.</p>
+  	<h3>Development</h3>
+	<p><em>spigg</em> is released under the MIT license and is <a href="https://github.com/vaikava/spigg">hosted at Github</a>, so 
+	feel free to contribute.
+	</p>
+	
+	<p>To run tests;</p>
+	<pre><code>$ make test</code></pre>
+	
+	<p>
+		<strong>Roadmap:</strong>
+	<ul>
+	  <li>Better event support</li>
+		
+	</ul>
+	</p>
+  </div>
   
-  <span style="color: #008800; font-style: italic; background-color: #0f140f"># Persist data using whatever database you want</span>
-  <span style="color: #fb660a">save: </span><span style="color: #ff0086; font-weight: bold">(doc, fn) -&gt;</span>
-    <span style="color: #ffffff">require(</span><span style="color: #0086d2">&quot;db&quot;</span><span style="color: #ffffff">).collection(</span><span style="color: #0086d2">&quot;users&quot;</span><span style="color: #ffffff">).save</span> <span style="color: #ffffff">doc</span>
 
-<span style="color: #fb660a">module.exports = </span><span style="color: #ffffff">UserMapper</span>
-
-<span style="color: #008800; font-style: italic; background-color: #0f140f"># /app.js</span>
-<span style="color: #fb660a">express = </span>   <span style="color: #ffffff">require(</span><span style="color: #0086d2">&#39;express&#39;</span><span style="color: #ffffff">)</span>
-<span style="color: #fb660a">user = </span>      <span style="color: #ffffff">require(</span><span style="color: #0086d2">&quot;./entities/User.coffee&quot;</span><span style="color: #ffffff">)</span>
-<span style="color: #fb660a">userMapper = </span><span style="color: #ffffff">require(</span><span style="color: #0086d2">&quot;./mappers/User.coffee&quot;</span><span style="color: #ffffff">)</span>
-<span style="color: #fb660a">app = </span>       <span style="color: #ffffff">express()</span>
-
-<span style="color: #ffffff">app.post</span> <span style="color: #0086d2">&quot;/users&quot;</span><span style="color: #ffffff">,</span> <span style="color: #ff0086; font-weight: bold">(req, res) -&gt;</span>
-  <span style="color: #fb660a">user = </span><span style="color: #fb660a; font-weight: bold">new</span> <span style="color: #ffffff">User</span> <span style="color: #ffffff">req.body</span>
-  <span style="color: #ffffff">userMapper.save</span> <span style="color: #ffffff">user</span> <span style="color: #fb660a; font-weight: bold">if</span> <span style="color: #ffffff">user.isValid()</span> 
-  <span style="color: #ffffff">res.send</span> <span style="color: #0086d2">&quot;&quot;</span><span style="color: #ffffff">,</span> <span style="color: #0086f7; font-weight: bold">201</span>
-
-<span style="color: #ffffff">app.listen(</span><span style="color: #0086f7; font-weight: bold">80</span><span style="color: #ffffff">)</span>
-</pre></div>
-
-
-
-		<h2>But why?</h2>
-		<p>Imagine having an application that lets users signup.<br />
-		For each signup, you need to apply app-specific validation rules to the user-submitted data to create a
-		<code>user</code> that you can persist to your database of choice.<br /><br />
-		
-		Mashing this together in one block is great for rapid prototyping, but problems
-		quickly arise when you need to unit test your code, or work with <code>users</code> as
-		a resource from elsewhere in your application. <br /><br />
-		
-		<em>Dude, is that user a kid?</em>
-		Call <code>user.isAdult()</code> and find out by invoking the business logic you just centralized into your entity. 
-		<br /><br />
-		
-		Without separation of concerns, you quickly end up doing integration testing instead of actual unit testing and any DRY principles
-		can be forgotten soon. N<br /><br />
-		
-		As long as you stick to your mappers for accessing and persisting data across
-		your application, using multiple databases and building cache-layers inside
-		or even on top of your models should be a breeze.</p>
-
-		</div>
-		
-	</body>
+</div>
+</body>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+  <script type="text/javascript" src="js/rainbow-custom.min.js"></script>
 </html>
