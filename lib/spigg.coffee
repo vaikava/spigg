@@ -29,7 +29,7 @@ class SpiggEntity
   # Sets a property in the entity either by key/value
   # or from a full object by calling the setter accordingly
   set: (k, v) ->
-    # Check if we have key/value args. Merge them into an object if so 
+    # Check if we have key/value args. Merge them into an object if thats the case
     if arguments.length is 2
       o = {}
       o[k] = v
@@ -49,7 +49,7 @@ class SpiggEntity
   setDefaultValue: (v) ->
     @default_val = v
     
-  # Resets the entity back to defaults 
+  # Resets the entity back to defaults
   reset: ->
     @data = @_merge @defaults, {}
   
@@ -124,7 +124,7 @@ class SpiggEntity
 
 class SpiggMapper
 
-  # Checks whether or not the passed argument is 
+  # Checks whether or not the passed argument is
   # a spiggEntity or not
   isEntity: (v) ->
     v instanceof SpiggEntity
