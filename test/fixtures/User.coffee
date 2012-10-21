@@ -11,6 +11,8 @@ class User extends s.Entity
       end:   true
       meta:
         lastlogin: true
+        fieldA:    true
+        fieldB:    true
 
     @defaults =
       friends: []

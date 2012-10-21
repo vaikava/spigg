@@ -15,8 +15,10 @@ describe "spigg.js", ->
       obj = 
         name: "JOHN DOE"
         ihaznosetter: "BRR"
+        iamfalse: false
         nested:
-          email: "INFO@EXAMPLE.COM"  
+          email: "INFO@EXAMPLE.COM"
+          falseish: true
       
       setters =
         name: (str) ->
@@ -24,18 +26,22 @@ describe "spigg.js", ->
         nested:
           email: (str) ->
             str.toLowerCase()
+          falseish: ->
+            return false
       
       expected =
         name: "john doe"
+        iamfalse: false
         ihaznosetter: "BRR"
         nested:
           email: "info@example.com"
+          falseish: false
           
       assert.deepEqual @entity._set(obj, setters), expected
       
     it "_merge works as expected", ->
-      o = @entity._merge({name: "John Doe"}, {email: "info@example.com"})
-      assert.deepEqual o, name: "John Doe", email: "info@example.com"
+      o = @entity._merge({name: "John Doe", iamfalse: false}, {email: "info@example.com"})
+      assert.deepEqual o, name: "John Doe", email: "info@example.com", iamfalse: false
     
     it "_merge overwrites props in second argument", ->  
       o = @entity._merge({name: "Jane Doe"}, {name: "John Doe"})
@@ -46,6 +52,7 @@ describe "spigg.js", ->
       obj =
         name: "John Doe"
         email: "info@example.com"
+        iamfalse: false
         nested:
           value:      []
           notAllowed: true
@@ -53,16 +60,19 @@ describe "spigg.js", ->
       allowed = 
         name:  true
         email: false
+        iamfalse: true
         nested:
           value: true
       
       # Email should not exist
       expected = 
         name:   obj.name
+        iamfalse: false
         nested: 
           value: []
       
       result = @entity._filter(obj, allowed)
+      #console.log "RESULT", result
       assert.deepEqual result, expected
 
 
@@ -93,6 +103,14 @@ describe "spigg.js", ->
     it "Can set from object", ->
       @u.set name: "John Doe"  
       assert.deepEqual @u.data, {friends: [], name: "john doe"}
+  
+    #it "Setting by object multiple times works as expected", ->
+      #@u.set meta: fieldA: "str"
+      #@u.set meta["fieldB"] "str"
+    
+    it "Can set false values", ->
+      @u.set end: false
+      assert.equal @u.data.end, false
 
     it "Custom setter can modify object", ->
       @u.set start: "start"

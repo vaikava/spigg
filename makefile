@@ -5,7 +5,8 @@ test:
 	-t 10000 \
 	-r coffee-script \
 	--compilers coffee:coffee-script \
-	--bail
+	--bail $(ARGS)
+	
 
 compile:
 	rm -rf ./dist

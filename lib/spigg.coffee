@@ -17,7 +17,6 @@ class SpiggEntity
     @init() if typeof @init is 'function'
     
     @data = @_merge @defaults, {} if @defaults and !noDefaults
-    #@_setObject(d) if d
     @set d if d
   
   # Returns a property from the entity
@@ -89,7 +88,9 @@ class SpiggEntity
     
     # Pass along the current @data along with a reference to this in order
     # to allow invoking other methods and so on
-    return setters(val, @data, @) if val and typeof setters is 'function'
+    if typeof val isnt "undefined" and typeof setters is 'function'
+      return setters(val, @data, @)
+      
     o = {}
     
     for key of data
@@ -109,7 +110,7 @@ class SpiggEntity
     return obj if Object.prototype.toString.call(obj) isnt "[object Object]"
     
     for key of obj
-      o[key] = @_filter(obj[key], fields[key]) if fields[key]
+      o[key] = @_filter(obj[key], fields[key]) if fields[key] #if typeof fields[key] isnt false
     
     return o
 

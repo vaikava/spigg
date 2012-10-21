@@ -1,7 +1,7 @@
 {
   "name": "spigg",
   "description": "Separates concerns when working with data in node.js for DRY principles and modularity",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "main": "index.js",
   "keywords": ["model","data","separation","modularity"],
   "url": "https://github.com/vaikava/spigg",
