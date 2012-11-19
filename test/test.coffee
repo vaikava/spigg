@@ -1,6 +1,6 @@
 assert = require("chai").assert
-User = require("./fixtures/User").User
-spigg = require("../lib/spigg.coffee")
+User =   require("./fixtures/User").User
+spigg =  require("../lib/spigg.coffee")
 mapper = require("./fixtures/User").UserMapper
 
 describe "spigg.js", ->
@@ -200,5 +200,4 @@ describe "spigg.js", ->
       assert.ok(!mapper.isEntity(["I AM ZE ARRAY"]))
    
     it "hasData works as expected", ->
-      assert.deepEqual mapper.hasData(user), friends: [], name: "john doe"
-      
+      assert.deepEqual mapper.hasData(user), friends: [], name: "john doe"         

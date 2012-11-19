@@ -40,6 +40,7 @@ class SpiggEntity
     # 2: Overwrite current data
     @data = @_merge(@_filter(@_set(k, @setters), @fields), @data)
     
+    
     # Invoke the change event to create revisions
     @events.emit "change", @
     
@@ -94,6 +95,7 @@ class SpiggEntity
     o = {}
     
     for key of data
+      
       if setters[key]
         o[key] = @_set(data[key], setters[key], data[key])
       else
@@ -110,7 +112,11 @@ class SpiggEntity
     return obj if Object.prototype.toString.call(obj) isnt "[object Object]"
     
     for key of obj
-      o[key] = @_filter(obj[key], fields[key]) if fields[key] #if typeof fields[key] isnt false
+      
+      if fields[key] is true
+        o[key] = obj[key]
+      else
+        o[key] = @_filter(obj[key], fields[key]) if fields[key]
     
     return o
 
